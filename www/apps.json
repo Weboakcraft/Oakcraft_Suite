@@ -6,7 +6,7 @@
     "repo": "Weboakcraft/Oakcraft_Suite",
     "catalog": "https://raw.githubusercontent.com/Weboakcraft/Oakcraft_Suite/main/www/apps.json"
   },
-  "backend": "",
+  "backend": "https://script.google.com/macros/s/AKfycbyLvZxaDlHGXQ4Cg2fBVe4pPibBgVKnbsa5rCCmwZOKD5HrIk8rJ2Ig9640DzYa2NocxA/exec",
   "apps": [
     {
       "id": "crm",
