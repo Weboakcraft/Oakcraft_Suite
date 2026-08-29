@@ -52,7 +52,7 @@ jobs:
         run: |
           export BUILD_TOOLS="$ANDROID_HOME/build-tools/34.0.0" ANDROID_JAR="$ANDROID_HOME/platforms/android-34/android.jar"
           if [ "$HAS_KEYSTORE" = "true" ]; then export KEYSTORE="$RUNNER_TEMP/release.jks"; fi
-          export VERSION_CODE="$(date +%y%m%d%H)"
+          export VERSION_CODE="$(date +%y%j%H%M)"     # yy + day-of-year + HHmm: always increasing, 2 builds in one hour stay distinct
           export VERSION_NAME="1.0.$(date +%Y%m%d).${{ github.run_number }}"
           bash android/build.sh
           echo "APK_PATH=$(ls android/build/*.apk)" >> "$GITHUB_ENV"
