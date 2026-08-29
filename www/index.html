@@ -124,6 +124,12 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
 </header>
 
 <main>
+  <!-- Suite self-update (shown on every screen, login included) -->
+  <div id="suite-banner" class="banner hidden">
+    <img src="icons/suite.png" alt="">
+    <div class="bt"><b>Suite update available</b><span id="suite-banner-txt"></span></div>
+    <button class="btn sm" id="suite-banner-btn">Update</button>
+  </div>
   <!-- ===================== LOGIN ===================== -->
   <section id="v-login" class="view card hidden">
     <img class="logo" src="icons/suite-256.png" alt="OakCraft Suite">
@@ -151,11 +157,6 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
 
   <!-- ===================== HOME ===================== -->
   <section id="v-home" class="view hidden">
-    <div id="suite-banner" class="banner hidden">
-      <img src="icons/suite.png" alt="">
-      <div class="bt"><b>Suite update available</b><span id="suite-banner-txt"></span></div>
-      <button class="btn sm" id="suite-banner-btn">Update</button>
-    </div>
     <div class="hello"><h2 id="h-hello">Your apps</h2><small id="h-sub"></small></div>
     <div id="grid" class="grid"></div>
     <div class="foot" id="h-foot"></div>
@@ -461,7 +462,7 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
     else if (/Unable to resolve host|Network is unreachable|timed out|ENETUNREACH|ETIMEDOUT/i.test(t)) t = 'No internet connection';
     toast('Download failed: ' + t);
   }
-  window.Suite_onProgress = function (id, pct) { S.progress[id] = pct; var el = document.getElementById('prog-' + id); if (el) { el.className = pct < 0 ? 'prog ind' : 'prog'; el.firstChild.style.width = (pct < 0 ? 40 : pct) + '%'; var l = document.getElementById('progl-' + id); if (l) l.textContent = pct < 0 ? 'Downloading…' : 'Downloading… ' + pct + '%'; } };
+  window.Suite_onProgress = function (id, pct) { S.progress[id] = pct; if (id === 'suite') { renderSuiteBanner(); return; } var el = document.getElementById('prog-' + id); if (el) { el.className = pct < 0 ? 'prog ind' : 'prog'; el.firstChild.style.width = (pct < 0 ? 40 : pct) + '%'; var l = document.getElementById('progl-' + id); if (l) l.textContent = pct < 0 ? 'Downloading…' : 'Downloading… ' + pct + '%'; } };
   window.Suite_onDownloaded = function (id, fileName, infoJson) {
     var app = appById(id); var info = {}; try { info = JSON.parse(infoJson || '{}') || {}; } catch (e) {}
     if (!app) { S.busy[id] = null; render(); return; }
@@ -553,9 +554,20 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
   function render() {
     var u = S.session && S.session.user;
     $('#hd-sub').textContent = S.session ? (S.session.open ? 'Open mode — no login' : ((u && (u.name || u.email)) || '') + (isAdmin() ? ' · Admin' : '')) : 'Company apps — one place';
+    renderSuiteBanner();
     if (S.view === 'login') renderLogin();
     if (S.view === 'home') renderHome();
     if (S.view === 'admin') renderUsers();
+  }
+  function renderSuiteBanner() {
+    var srel = Native.has ? relFor(suiteApp()) : null;
+    var sb = $('#suite-banner');
+    var show = !!(srel && srel.asset && srel.versionCode && srel.versionCode > Native.versionCode());
+    sb.classList.toggle('hidden', !show);
+    if (!show) return;
+    var b = S.busy.suite;
+    $('#suite-banner-txt').textContent = b === 'downloading' ? 'Downloading… ' + (S.progress.suite >= 0 ? S.progress.suite + '%' : '') : b === 'installing' ? 'Installing — confirm on screen' : 'Version ' + relLabel(srel).replace(/^v/, '') + ' · you have ' + Native.version();
+    $('#suite-banner-btn').disabled = !!b; $('#suite-banner-btn').textContent = b ? 'Please wait' : 'Update';
   }
   function renderLogin() {
     var f = $('#l-foot');
@@ -571,16 +583,6 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
     var g = $('#grid');
     if (!apps.length) g.innerHTML = '<div class="empty card" style="grid-column:1/-1">' + (S.catalog.apps.length ? 'No apps have been assigned to your account yet.<br>Ask the admin to add you in the Suite access list.' : 'App catalogue could not be loaded. Check your internet connection and tap refresh.') + '</div>';
     else g.innerHTML = apps.map(tileHtml).join('');
-    // suite self-update banner
-    var srel = Native.has ? relFor(suiteApp()) : null;
-    var sb = $('#suite-banner');
-    var show = !!(srel && srel.asset && srel.versionCode && srel.versionCode > Native.versionCode());
-    sb.classList.toggle('hidden', !show);
-    if (show) {
-      var b = S.busy.suite;
-      $('#suite-banner-txt').textContent = b === 'downloading' ? 'Downloading… ' + (S.progress.suite >= 0 ? S.progress.suite + '%' : '') : b === 'installing' ? 'Installing — confirm on screen' : 'Version ' + relLabel(srel).replace(/^v/, '') + ' · you have ' + Native.version();
-      $('#suite-banner-btn').disabled = !!b; $('#suite-banner-btn').textContent = b ? 'Please wait' : 'Update';
-    }
     var anyStale = S.catalog.apps.some(function (a) { var r = S.releases[a.repo]; return r && r.error; });
     $('#h-foot').innerHTML = verFoot() +
       (anyStale ? '<br><span style="color:var(--warn)">Could not reach GitHub just now — showing last known versions.</span>' : '') +
@@ -783,8 +785,10 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
       // no login server -> open mode (remembered session is ignored)
       setSession({ open: true, user: { name: 'Guest', role: 'open', apps: '*' } });
     } else if (S.session && S.session.open) setSession(null);
-    if (S.session) { showView('home'); refreshInstalled(); render(); refreshMe(); checkReleases(false); }
+    refreshInstalled();
+    if (S.session) { showView('home'); render(); refreshMe(); }
     else { showView('login'); render(); }
+    checkReleases(false);          // also on the login screen -> Suite self-update banner
     refreshCatalog();
   });
   window.__suite = { S: S, Native: Native, api: api, render: render, checkReleases: checkReleases, relFor: relFor, needsUpdate: needsUpdate, appStatus: appStatus, visibleApps: visibleApps, refreshInstalled: refreshInstalled, appById: appById };
