@@ -143,7 +143,7 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
         <input class="t" id="l-pass" type="password" autocomplete="current-password" placeholder="••••••••">
       </div>
       <div id="l-setup" class="hidden">
-        <div class="msg info">First login for this e-mail — create your password.</div>
+        <div class="msg info">First login for this e-mail — create your password.<br><span style="opacity:.8">Pehli baar login: apna password banayein (kam se kam 6 characters), phir Sign in.</span></div>
         <label class="f" for="l-new">New password</label>
         <input class="t" id="l-new" type="password" autocomplete="new-password" placeholder="min 6 characters">
         <label class="f" for="l-new2">Confirm password</label>
@@ -516,9 +516,10 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
     if (setup) {
       var n1 = $('#l-new').value, n2 = $('#l-new2').value;
       if (n1.length < 6) { showErr(msg, 'Password must be at least 6 characters'); return; }
-      if (n1 !== n2) { showErr(msg, 'Passwords do not match'); return; }
+      if (n1 !== n2) { showErr(msg, 'Passwords do not match — type the same password in both boxes'); return; }
       data.newPassword = n1;
-    } else if (!pass) { showErr(msg, 'Enter your password'); return; }
+    }
+    // an empty password is sent as-is: the server answers "create your password" (first login) or "Wrong password"
     var btn = $('#l-btn'); btn.disabled = true; btn.textContent = 'Signing in…';
     api('login', data).then(function (j) {
       if (j && j.ok && j.token) {
@@ -526,7 +527,10 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
         $('#l-pass').value = ''; $('#l-new').value = ''; $('#l-new2').value = ''; $('#l-setup').classList.add('hidden'); $('#l-pass-wrap').classList.remove('hidden');
         showView('home'); render(); refreshInstalled(); render(); checkReleases(true);
       } else if (j && j.setup) {
-        $('#l-setup').classList.remove('hidden'); $('#l-pass-wrap').classList.add('hidden'); $('#l-new').focus();
+        // first login: keep what they typed as the new password, ask them to confirm it
+        $('#l-setup').classList.remove('hidden'); $('#l-pass-wrap').classList.add('hidden');
+        if (pass && !$('#l-new').value) $('#l-new').value = pass;
+        ($('#l-new').value ? $('#l-new2') : $('#l-new')).focus();
       } else showErr(msg, (j && j.error) || 'Sign-in failed');
     }).catch(function (e) { showErr(msg, e.message || 'Cannot reach the server'); })
       .then(function () { btn.disabled = false; btn.textContent = 'Sign in'; });
@@ -776,7 +780,8 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
   var toastT;
   function toast(t) { var el = $('#toast'); el.textContent = t; el.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(function () { el.classList.remove('show'); }, 2600); }
   $('#f-login').addEventListener('submit', doLogin);
-  $('#l-email').addEventListener('input', function () { if (!$('#l-setup').classList.contains('hidden')) { $('#l-setup').classList.add('hidden'); $('#l-pass-wrap').classList.remove('hidden'); } });
+  $('#l-email').addEventListener('input', function () { $('#l-msg').classList.add('hidden'); if (!$('#l-setup').classList.contains('hidden')) { $('#l-setup').classList.add('hidden'); $('#l-pass-wrap').classList.remove('hidden'); } });
+  ['#l-pass', '#l-new', '#l-new2'].forEach(function (id) { $(id).addEventListener('input', function () { $('#l-msg').classList.add('hidden'); }); });
   document.addEventListener('visibilitychange', function () { if (!document.hidden && S.view === 'home') { refreshInstalled(); render(); checkReleases(false); } });
 
   /* ------------------------------------------------------------------ boot ------- */
