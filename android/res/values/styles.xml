@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">#0F1729</color>
+    <color name="brand_dark">#0F1729</color>
+    <color name="window_bg">#F3F4F6</color>
+
+    <style name="AppTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/brand_dark</item>
+        <item name="android:navigationBarColor">@color/brand_dark</item>
+        <item name="android:windowBackground">@color/window_bg</item>
+        <item name="android:colorPrimary">#C9A24A</item>
+        <item name="android:colorPrimaryDark">@color/brand_dark</item>
+        <item name="android:colorAccent">#C9A24A</item>
+    </style>
+</resources>

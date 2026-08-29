@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F1729">
+<meta name="color-scheme" content="light">
+<title>OakCraft Suite</title>
+<link rel="icon" href="icons/suite.png">
+<style>
+:root{--navy:#0F1729;--navy2:#1B2740;--gold:#C9A24A;--gold2:#E2BC63;--bg:#F3F4F6;--card:#FFFFFF;--text:#1B2233;--muted:#6B7280;--line:#E5E7EB;--ok:#15803D;--okbg:#DCFCE7;--warn:#B45309;--warnbg:#FEF3C7;--err:#B91C1C;--errbg:#FEE2E2;--info:#1D4ED8;--infobg:#DBEAFE;--r:16px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font:15px/1.45 -apple-system,"Segoe UI",Roboto,"Noto Sans",Ubuntu,Arial,sans-serif;min-height:100%}
+body{padding-bottom:env(safe-area-inset-bottom)}
+button,input,select{font:inherit}
+a{color:var(--info)}
+.hidden{display:none!important}
+header#top{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;padding:10px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+header#top img{width:34px;height:34px;border-radius:9px}
+header#top .ttl{flex:1;min-width:0}
+header#top .ttl b{display:block;font-size:16px;letter-spacing:.2px}
+header#top .ttl small{display:block;color:#C7CEDB;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ibtn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#fff;border-radius:10px;width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px}
+.ibtn:active{background:rgba(255,255,255,.18)}
+.ibtn.spin svg{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+main{max-width:860px;margin:0 auto;padding:14px 12px 40px}
+.view{animation:fade .18s ease-out}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border-radius:var(--r);box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 8px rgba(16,24,40,.06);padding:16px}
+/* login */
+#v-login{max-width:400px;margin:24px auto 0}
+#v-login .logo{display:block;width:96px;height:96px;margin:0 auto 10px;border-radius:24px;box-shadow:0 6px 20px rgba(15,23,41,.25)}
+#v-login h1{text-align:center;margin:6px 0 2px;font-size:22px}
+#v-login p.sub{text-align:center;color:var(--muted);margin:0 0 18px;font-size:13px}
+label.f{display:block;margin:10px 0 0;font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+input.t,select.t{width:100%;margin-top:4px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text);outline:none}
+input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,74,.22)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 14px;border-radius:10px;border:1px solid transparent;background:#EEF0F3;color:var(--text);cursor:pointer;font-weight:600;min-height:40px;white-space:nowrap}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.primary{background:var(--navy);color:#fff}
+.btn.gold{background:var(--gold);color:#1B1B1B}
+.btn.danger{background:var(--errbg);color:var(--err)}
+.btn.ghost{background:transparent;border-color:var(--line)}
+.btn.block{width:100%;margin-top:14px}
+.btn.sm{padding:7px 10px;min-height:34px;font-size:13px;border-radius:8px}
+.msg{margin-top:12px;padding:10px 12px;border-radius:10px;font-size:13px}
+.msg.err{background:var(--errbg);color:var(--err)}
+.msg.ok{background:var(--okbg);color:var(--ok)}
+.msg.info{background:var(--infobg);color:var(--info)}
+/* home */
+.banner{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-radius:var(--r);padding:12px 14px;margin-bottom:14px;box-shadow:0 4px 14px rgba(15,23,41,.28)}
+.banner img{width:44px;height:44px;border-radius:12px}
+.banner .bt{flex:1;min-width:0;font-size:13px}
+.banner .bt b{display:block;font-size:14px}
+.banner .btn{background:var(--gold);color:#1B1B1B}
+.hello{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:2px 2px 10px}
+.hello h2{margin:0;font-size:17px}
+.hello small{color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.tile{background:var(--card);border-radius:var(--r);padding:14px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 8px rgba(16,24,40,.06);display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}
+.tile .ic{width:64px;height:64px;border-radius:18px;box-shadow:0 4px 12px rgba(0,0,0,.18);background:#eee;object-fit:cover}
+.tile .nm{font-weight:700;font-size:15px;margin-top:2px}
+.tile .ds{color:var(--muted);font-size:12px;min-height:16px}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:#EEF0F3;color:var(--muted);letter-spacing:.2px}
+.badge.ok{background:var(--okbg);color:var(--ok)}
+.badge.warn{background:var(--warnbg);color:var(--warn)}
+.badge.err{background:var(--errbg);color:var(--err)}
+.badge.info{background:var(--infobg);color:var(--info)}
+.tile .ver{font-size:12px;color:var(--muted);line-height:1.35}
+.tile .ver b{color:var(--text);font-weight:600}
+.tile .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+.tile .acts .btn{flex:1}
+.tile .links{font-size:12px}
+.prog{height:8px;border-radius:999px;background:#EEF0F3;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .2s}
+.prog.ind i{width:40%;animation:ind 1.1s ease-in-out infinite}
+@keyframes ind{0%{margin-left:-40%}100%{margin-left:100%}}
+.empty{text-align:center;color:var(--muted);padding:30px 10px}
+.foot{margin-top:22px;text-align:center;color:var(--muted);font-size:12px;line-height:1.6}
+.foot a{color:var(--muted)}
+/* admin */
+.bar{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.bar h2{flex:1;margin:0;font-size:17px}
+.ulist{display:flex;flex-direction:column;gap:10px}
+.urow{background:var(--card);border-radius:14px;padding:12px 14px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 8px rgba(16,24,40,.06);display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center}
+.urow .un{font-weight:700}
+.urow .ue{color:var(--muted);font-size:12px;word-break:break-all}
+.urow .ua{font-size:13px;margin-top:4px;grid-column:1/-1}
+.urow .ub{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;grid-column:1/-1}
+.urow .btn{grid-row:1/3;grid-column:2}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:13px;background:#fff;cursor:pointer;user-select:none}
+.chip input{margin:0}
+.chip.on{border-color:var(--gold);background:#FBF5E6}
+/* menu + modal + toast */
+#menu{position:fixed;top:58px;right:10px;z-index:30;background:#fff;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.22);min-width:210px;padding:6px;animation:fade .15s}
+#menu button{display:flex;width:100%;align-items:center;gap:10px;background:none;border:0;padding:11px 12px;border-radius:8px;cursor:pointer;text-align:left;color:var(--text)}
+#menu button:active{background:#F3F4F6}
+#menu .sep{height:1px;background:var(--line);margin:4px 6px}
+#menu small{display:block;padding:6px 12px;color:var(--muted);font-size:11px}
+#shade{position:fixed;inset:0;background:rgba(10,14,25,.5);z-index:40;display:flex;align-items:flex-end;justify-content:center;animation:fade .15s}
+#shade .sheet{background:#fff;width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto}
+@media(min-width:600px){#shade{align-items:center}#shade .sheet{border-radius:18px}}
+.sheet h3{margin:0 0 6px;font-size:17px}
+.sheet .row{display:flex;gap:8px;margin-top:14px}
+.sheet .row .btn{flex:1}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 16px;border-radius:999px;font-size:13px;z-index:60;box-shadow:0 6px 20px rgba(0,0,0,.3);max-width:92vw;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.show{opacity:1}
+.kv{font-size:13px;color:var(--muted);line-height:1.7}
+.kv b{color:var(--text)}
+</style>
+</head>
+<body>
+<header id="top">
+  <img src="icons/suite.png" alt="">
+  <div class="ttl"><b>OakCraft Suite</b><small id="hd-sub">Company apps — one place</small></div>
+  <button class="ibtn hidden" id="b-refresh" title="Check for updates" aria-label="Check for updates">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+  </button>
+  <button class="ibtn hidden" id="b-menu" title="Menu" aria-label="Menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+  </button>
+</header>
+
+<main>
+  <!-- ===================== LOGIN ===================== -->
+  <section id="v-login" class="view card hidden">
+    <img class="logo" src="icons/suite-256.png" alt="OakCraft Suite">
+    <h1>OakCraft Suite</h1>
+    <p class="sub">Sign in with your company e-mail to see your apps</p>
+    <form id="f-login" autocomplete="on">
+      <label class="f" for="l-email">E-mail</label>
+      <input class="t" id="l-email" type="email" inputmode="email" autocapitalize="off" autocomplete="username" placeholder="you@oakcraft.in" required>
+      <div id="l-pass-wrap">
+        <label class="f" for="l-pass">Password</label>
+        <input class="t" id="l-pass" type="password" autocomplete="current-password" placeholder="••••••••">
+      </div>
+      <div id="l-setup" class="hidden">
+        <div class="msg info">First login for this e-mail — create your password.</div>
+        <label class="f" for="l-new">New password</label>
+        <input class="t" id="l-new" type="password" autocomplete="new-password" placeholder="min 6 characters">
+        <label class="f" for="l-new2">Confirm password</label>
+        <input class="t" id="l-new2" type="password" autocomplete="new-password">
+      </div>
+      <div id="l-msg" class="msg err hidden"></div>
+      <button class="btn primary block" id="l-btn" type="submit">Sign in</button>
+    </form>
+    <div class="foot" id="l-foot"></div>
+  </section>
+
+  <!-- ===================== HOME ===================== -->
+  <section id="v-home" class="view hidden">
+    <div id="suite-banner" class="banner hidden">
+      <img src="icons/suite.png" alt="">
+      <div class="bt"><b>Suite update available</b><span id="suite-banner-txt"></span></div>
+      <button class="btn sm" id="suite-banner-btn">Update</button>
+    </div>
+    <div class="hello"><h2 id="h-hello">Your apps</h2><small id="h-sub"></small></div>
+    <div id="grid" class="grid"></div>
+    <div class="foot" id="h-foot"></div>
+  </section>
+
+  <!-- ===================== ADMIN ===================== -->
+  <section id="v-admin" class="view hidden">
+    <div class="bar">
+      <button class="btn sm ghost" id="a-back">← Back</button>
+      <h2>Users &amp; access</h2>
+      <button class="btn sm primary" id="a-add">+ Add user</button>
+    </div>
+    <div id="a-list" class="ulist"></div>
+    <div class="foot">Access list lives in the <b>Suite_Users</b> tab of the Suite Google Sheet — this screen edits the same rows.</div>
+  </section>
+</main>
+
+<div id="menu" class="hidden"></div>
+<div id="shade" class="hidden"></div>
+<div id="toast"></div>
+
+<script>
+/* =====================================================================================
+   OakCraft Suite — launcher / updater UI
+   - Catalogue (apps.json) is bundled AND re-read from the Suite repo at runtime.
+   - Each app's newest APK is discovered from that app repo's GitHub Releases.
+   - Runs inside the Android shell (window.Suite bridge) or in a plain browser (web mode).
+   ===================================================================================== */
+(function () {
+  'use strict';
+
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var RELEASE_TTL = 10 * 60 * 1000;   // re-check GitHub at most every 10 min (unless the user taps refresh)
+
+  /* ------------------------------------------------------------------ storage ---- */
+  var store = {
+    get: function (k, d) { try { var v = localStorage.getItem('suite.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set: function (k, v) { try { if (v == null) localStorage.removeItem('suite.' + k); else localStorage.setItem('suite.' + k, JSON.stringify(v)); } catch (e) {} }
+  };
+
+  /* ------------------------------------------------------------------ native ----- */
+  var Native = {
+    has: !!(window.Suite && typeof window.Suite.getVersionCode === 'function'),
+    versionCode: function () { try { return Native.has ? (+window.Suite.getVersionCode() || 0) : 0; } catch (e) { return 0; } },
+    version: function () { try { return Native.has ? String(window.Suite.getVersion()) : 'web'; } catch (e) { return '?'; } },
+    pkg: function () { try { return Native.has ? String(window.Suite.getPackage()) : ''; } catch (e) { return ''; } },
+    appInfo: function (pkg) { if (!Native.has || !pkg) return null; try { return JSON.parse(window.Suite.appInfo(pkg)); } catch (e) { return { installed: false }; } },
+    launch: function (pkg) { try { return !!(Native.has && window.Suite.launch(pkg)); } catch (e) { return false; } },
+    download: function (id, url, name) { window.Suite.downloadAndInstall(id, url, name); },
+    install: function (name) { window.Suite.installFile(name); },
+    open: function (url) { if (Native.has) { try { window.Suite.openExternal(url); return; } catch (e) {} } window.open(url, '_blank'); },
+    bundledCatalog: function () { if (!Native.has) return null; try { return JSON.parse(window.Suite.bundledCatalog()); } catch (e) { return null; } }
+  };
+
+  /* ------------------------------------------------------------------ state ------ */
+  var S = {
+    catalog: { suite: {}, backend: '', apps: [] },
+    session: store.get('session', null),     // {token, user:{email,name,role,apps}, open}
+    installed: {},                           // package -> {installed, versionName, versionCode, updatedAt}
+    releases: store.get('releases', {}) || {}, // repo -> normalised release (+checkedAt)
+    memory: store.get('memory', {}) || {},   // package -> {fp, versionCode}  (what we last installed)
+    busy: {},                                // appId -> 'downloading' | 'installing'
+    progress: {},                            // appId -> pct
+    view: 'login',
+    users: null                              // admin list
+  };
+
+  function normalizeCatalog(c) {
+    c = c && typeof c === 'object' ? c : {};
+    var apps = Array.isArray(c.apps) ? c.apps.filter(function (a) { return a && a.id && a.repo; }) : [];
+    apps.forEach(function (a) { if (!a.name) a.name = a.id; if (!a.asset) a.asset = '\\.apk$'; });
+    return { version: c.version || 0, suite: c.suite || {}, backend: (c.backend || '').trim(), apps: apps, fetchedAt: c.fetchedAt || 0 };
+  }
+  function suiteApp() {
+    return { id: 'suite', name: (S.catalog.suite && S.catalog.suite.name) || 'OakCraft Suite', package: Native.pkg() || 'in.oakcraft.suite', repo: S.catalog.suite && S.catalog.suite.repo, asset: '\\.apk$', icon: 'icons/suite.png' };
+  }
+  function appById(id) {
+    if (id === 'suite') return suiteApp();
+    for (var i = 0; i < S.catalog.apps.length; i++) if (S.catalog.apps[i].id === id) return S.catalog.apps[i];
+    return null;
+  }
+  function isAdmin() { var u = S.session && S.session.user; return !!(u && /^(admin|owner|administrator)$/i.test(u.role || '')); }
+  function visibleApps() {
+    var apps = S.catalog.apps;
+    if (!S.session) return [];
+    if (S.session.open || isAdmin()) return apps;
+    var list = S.session.user && S.session.user.apps;
+    if (list === '*' || list === 'all') return apps;
+    if (typeof list === 'string') list = list.split(/[,\s]+/);
+    if (!Array.isArray(list)) return [];
+    var set = {}; list.forEach(function (x) { if (x) set[String(x).trim().toLowerCase()] = 1; });
+    if (set['*'] || set['all']) return apps;
+    return apps.filter(function (a) { return set[a.id.toLowerCase()] || (a.package && set[a.package.toLowerCase()]); });
+  }
+
+  /* ------------------------------------------------------------------ backend ---- */
+  function hasBackend() { return !!S.catalog.backend; }
+  function api(action, data) {
+    var url = S.catalog.backend;
+    if (!url) return Promise.reject(new Error('No backend configured'));
+    var body = Object.assign({ action: action }, data || {});
+    if (S.session && S.session.token && !body.token) body.token = S.session.token;
+    return fetch(url, { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.text(); })
+      .then(function (t) {
+        var j; try { j = JSON.parse(t); } catch (e) { throw new Error('Unexpected reply from server'); }
+        if (j && j.ok === false && j.error === 'auth') { logout(true); throw new Error('Session expired — please sign in again'); }
+        return j;
+      });
+  }
+
+  /* ------------------------------------------------------------------ catalogue -- */
+  function loadCatalog() {
+    var cat = null;
+    var cached = store.get('catalog', null);
+    var bundled = Native.bundledCatalog();
+    if (cached && cached.apps && cached.apps.length) cat = cached; else if (bundled && bundled.apps) cat = bundled;
+    var p = cat ? Promise.resolve(cat) : fetch('apps.json?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.json(); }).catch(function () { return bundled || { apps: [] }; });
+    return p.then(function (c) { S.catalog = normalizeCatalog(c); });
+  }
+  /** Re-reads apps.json from the Suite repo (raw.githubusercontent.com). New apps / a changed backend URL reach every phone this way. */
+  function refreshCatalog() {
+    var url = S.catalog.suite && S.catalog.suite.catalog;
+    if (!url) return Promise.resolve(false);
+    return fetch(url + (url.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (remote) {
+        if (!remote || !Array.isArray(remote.apps) || !remote.apps.length) return false;
+        remote.fetchedAt = Date.now();
+        store.set('catalog', remote);
+        var oldBackend = S.catalog.backend, before = JSON.stringify(S.catalog.apps) + oldBackend;
+        S.catalog = normalizeCatalog(remote);
+        if (JSON.stringify(S.catalog.apps) + S.catalog.backend === before) return false;
+        if (!oldBackend && S.catalog.backend && S.session && S.session.open) { setSession(null); showView('login'); render(); return true; }   // login server appeared
+        if (oldBackend && !S.catalog.backend && S.session && !S.session.open) { setSession({ open: true, user: { name: 'Guest', role: 'open', apps: '*' } }); showView('home'); }
+        refreshInstalled(); render(); checkReleases(false);
+        return true;
+      }).catch(function () { return false; });
+  }
+
+  /* ------------------------------------------------------------------ releases --- */
+  function normalizeRelease(raw) {
+    if (!raw || typeof raw !== 'object') return null;
+    var assets = (raw.assets || []).map(function (a) { return { name: a.name, url: a.browser_download_url || a.url, size: a.size || 0, updatedAt: a.updated_at || a.updatedAt || a.created_at || null }; });
+    return { tag: raw.tag_name || raw.tag || '', name: raw.name || '', body: raw.body || '', publishedAt: raw.published_at || raw.publishedAt || null, htmlUrl: raw.html_url || raw.htmlUrl || '', assets: assets };
+  }
+  /** GET several GitHub API paths — through the login server (cached, higher rate limit) when available, else straight from the phone. */
+  function ghGet(paths) {
+    var direct = function () {
+      var out = {};
+      return Promise.all(paths.map(function (p) {
+        return fetch('https://api.github.com' + p, { headers: { Accept: 'application/vnd.github+json' }, cache: 'no-store' })
+          .then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
+          .then(function (j) { out[p] = j; });
+      })).then(function () { return out; });
+    };
+    if (!(hasBackend() && S.session && !S.session.open)) return direct();
+    return api('gh', { paths: paths }).then(function (j) { return j && j.ok && j.results ? j.results : direct(); }).catch(direct);
+  }
+  /** Each app repo -> {release, runs}. Newest APK = the repo's latest GitHub Release. Exact version number comes from
+      "versionCode: N" in the release notes (CRM / Suite) or, for repos that keep one "latest" release, from the
+      run number of the successful workflow run that uploaded the file (versionCode = run number in those apps). */
+  function checkReleases(force) {
+    var targets = {}; S.catalog.apps.forEach(function (a) { if (a.repo) targets[a.repo] = a; });
+    if (S.catalog.suite && S.catalog.suite.repo && !targets[S.catalog.suite.repo]) targets[S.catalog.suite.repo] = suiteApp();
+    var now = Date.now();
+    var need = Object.keys(targets).filter(function (r) { var x = S.releases[r]; return force || !x || !x.checkedAt || now - x.checkedAt > RELEASE_TTL || (x.error && now - x.checkedAt > 60000); });
+    if (!need.length) return Promise.resolve();
+    setSpin(true);
+    var paths = [];
+    need.forEach(function (r) {
+      paths.push('/repos/' + r + '/releases/latest');
+      var wf = targets[r].workflow; if (wf) paths.push('/repos/' + r + '/actions/workflows/' + encodeURIComponent(wf) + '/runs?status=success&per_page=8');
+    });
+    return ghGet(paths).then(function (res) {
+      // repos whose "latest" is missing (only pre-releases): fall back to the release list
+      var retry = need.filter(function (r) { return !res['/repos/' + r + '/releases/latest']; }).map(function (r) { return '/repos/' + r + '/releases?per_page=10'; });
+      if (!retry.length) return res;
+      return ghGet(retry).then(function (more) {
+        Object.keys(more).forEach(function (p) {
+          var list = more[p]; if (!Array.isArray(list)) return;
+          for (var i = 0; i < list.length; i++) if (!list[i].draft && list[i].assets && list[i].assets.length) { res[p.replace(/\?.*$/, '') + '/latest'] = list[i]; break; }
+        });
+        return res;
+      });
+    }).then(function (res) {
+      need.forEach(function (r) {
+        var rel = normalizeRelease(res['/repos/' + r + '/releases/latest']);
+        if (rel) {
+          var wf = targets[r].workflow, runs = wf ? res['/repos/' + r + '/actions/workflows/' + encodeURIComponent(wf) + '/runs?status=success&per_page=8'] : null;
+          if (runs && Array.isArray(runs.workflow_runs)) rel.runs = runs.workflow_runs.map(function (x) { return { n: x.run_number, at: x.created_at, done: x.updated_at }; });
+          rel.checkedAt = now; rel.error = false; S.releases[r] = rel;
+        }
+        else if (S.releases[r] && S.releases[r].tag) { S.releases[r].checkedAt = now; S.releases[r].error = true; }   // keep last good copy
+        else S.releases[r] = { error: true, checkedAt: now };
+      });
+      store.set('releases', S.releases);
+      setSpin(false); render();
+    }).catch(function () { setSpin(false); });
+  }
+  function relFor(app) {
+    var rel = app && app.repo ? S.releases[app.repo] : null;
+    if (!rel || !rel.tag) return null;
+    var re; try { re = new RegExp(app.asset || '\\.apk$', 'i'); } catch (e) { re = /\.apk$/i; }
+    var asset = null;
+    for (var i = 0; i < rel.assets.length; i++) { var a = rel.assets[i]; if (/\.apk$/i.test(a.name) && re.test(a.name)) { asset = a; break; } }
+    if (!asset) for (var j = 0; j < rel.assets.length; j++) if (/\.apk$/i.test(rel.assets[j].name)) { asset = rel.assets[j]; break; }
+    var m = /versionCode\s*[:=]\s*(\d+)/i.exec(rel.body || '');
+    var n = /versionName\s*[:=]\s*([^\s]+)/i.exec(rel.body || '');
+    var code = m ? parseInt(m[1], 10) : 0, vname = n ? n[1] : '';
+    if (!code && app.workflow && rel.runs && asset) {
+      // the run that uploaded this file = newest successful run created before the upload finished
+      var up = Date.parse(asset.updatedAt || rel.publishedAt || '') || 0, best = null;
+      rel.runs.forEach(function (x) { var t = Date.parse(x.at) || 0; if (t <= up + 5 * 60000 && (!best || x.n > best.n)) best = x; });
+      if (best) { code = best.n; if (!vname && app.versionNamePattern) vname = String(app.versionNamePattern).replace('{run}', best.n); }
+    }
+    return { tag: rel.tag, name: rel.name, body: rel.body, publishedAt: rel.publishedAt, htmlUrl: rel.htmlUrl, asset: asset, stale: !!rel.error,
+      versionCode: code, versionName: vname,
+      fp: asset ? (asset.updatedAt || '') + ':' + asset.size + ':' + rel.tag : rel.tag + ':' + (rel.publishedAt || '') };
+  }
+  function cmpVer(a, b) { // semver-ish compare of "1.2.10" strings
+    var x = String(a).replace(/^v/i, '').split('.'), y = String(b).replace(/^v/i, '').split('.');
+    for (var i = 0; i < Math.max(x.length, y.length); i++) { var p = parseInt(x[i] || '0', 10), q = parseInt(y[i] || '0', 10); if (isNaN(p) || isNaN(q)) return 0; if (p !== q) return p > q ? 1 : -1; }
+    return 0;
+  }
+  function needsUpdate(app, inst, rel) {
+    if (!inst || !inst.installed || !rel || !rel.asset) return false;
+    var mem = S.memory[app.package];
+    if (mem && mem.fp === rel.fp && mem.versionCode) return mem.versionCode > (inst.versionCode || 0);   // we already read this exact file's version
+    if (rel.versionCode) return rel.versionCode > (inst.versionCode || 0);                       // exact (release notes / workflow run number)
+    if (/^v?\d+(\.\d+)+$/.test(rel.tag) && inst.versionName) { var c = cmpVer(rel.tag, inst.versionName); if (c !== 0) return c > 0; return false; }
+    var t = Date.parse(rel.asset.updatedAt || rel.publishedAt || '') || 0;                      // last resort: newer file than the install
+    return t > (inst.updatedAt || 0) + 60000;
+  }
+  function relLabel(rel) {
+    if (!rel) return '';
+    if (rel.versionName) return 'v' + rel.versionName.replace(/^v/i, '');
+    if (rel.tag && !/^latest$/i.test(rel.tag) && !/^apk-\d+$/i.test(rel.tag)) return rel.tag;
+    var d = rel.asset && rel.asset.updatedAt ? rel.asset.updatedAt : rel.publishedAt;
+    return d ? 'build ' + fmtDate(d) : (rel.tag || '');
+  }
+  function verFoot() { return Native.has ? 'OakCraft Suite ' + esc(Native.version()) + ' (' + Native.versionCode() + ')' : 'OakCraft Suite · web version'; }
+  function fmtDate(iso) {
+    var d = new Date(iso); if (isNaN(d.getTime())) return String(iso || '');
+    return d.getDate() + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  /* ------------------------------------------------------------------ installed --- */
+  function refreshInstalled() {
+    if (!Native.has) return;
+    var apps = S.catalog.apps.concat([suiteApp()]);
+    apps.forEach(function (a) {
+      if (!a.package) return;
+      var prev = S.installed[a.package];
+      var now = Native.appInfo(a.package) || { installed: false };
+      S.installed[a.package] = now;
+      var changed = prev && now.installed && (!prev.installed || prev.versionCode !== now.versionCode || prev.updatedAt !== now.updatedAt);
+      if (changed && S.busy[a.id]) {
+        // installed through the Suite -> remember which release file this version came from
+        var rel = relFor(a);
+        if (rel) S.memory[a.package] = { fp: rel.fp, versionCode: now.versionCode };
+        S.busy[a.id] = null; toast(a.name + ' ' + (prev.installed ? 'updated' : 'installed') + ' ✓');
+      }
+    });
+    store.set('memory', S.memory);
+  }
+  function appStatus(app) {
+    var inst = S.installed[app.package];
+    var rel = relFor(app);
+    var checked = !!(app.repo && S.releases[app.repo] && S.releases[app.repo].checkedAt);   // a check finished (maybe without data)
+    if (!Native.has) return { kind: 'web', rel: rel, checked: checked };
+    if (S.busy[app.id]) return { kind: S.busy[app.id], rel: rel, inst: inst };
+    if (!inst || !inst.installed) return { kind: 'install', rel: rel, checked: checked };
+    if (!rel) return { kind: 'unknown', inst: inst };
+    if (!rel.asset) return { kind: 'noasset', inst: inst, rel: rel };
+    return { kind: needsUpdate(app, inst, rel) ? 'update' : 'ok', inst: inst, rel: rel };
+  }
+
+  /* ------------------------------------------------------------------ install ----- */
+  function startInstall(id) {
+    var app = appById(id); if (!app) return;
+    var rel = relFor(app);
+    if (!rel || !rel.asset) { toast('No APK found in the latest release of ' + app.name); return; }
+    if (!Native.has) { Native.open(rel.asset.url); return; }
+    S.busy[id] = 'downloading'; S.progress[id] = 0; render();
+    var name = id + '-' + (rel.asset.name || 'app.apk').replace(/[^A-Za-z0-9._-]+/g, '_');
+    try { Native.download(id, rel.asset.url, name); } catch (e) { fail(id, String(e && e.message || e)); }
+  }
+  function fail(id, msg) {
+    S.busy[id] = null; render();
+    var t = String(msg || 'failed');
+    if (/HTTP 403|HTTP 429/.test(t)) t = 'GitHub is rate-limiting this network — try again in a few minutes';
+    else if (/Unable to resolve host|Network is unreachable|timed out|ENETUNREACH|ETIMEDOUT/i.test(t)) t = 'No internet connection';
+    toast('Download failed: ' + t);
+  }
+  window.Suite_onProgress = function (id, pct) { S.progress[id] = pct; var el = document.getElementById('prog-' + id); if (el) { el.className = pct < 0 ? 'prog ind' : 'prog'; el.firstChild.style.width = (pct < 0 ? 40 : pct) + '%'; var l = document.getElementById('progl-' + id); if (l) l.textContent = pct < 0 ? 'Downloading…' : 'Downloading… ' + pct + '%'; } };
+  window.Suite_onDownloaded = function (id, fileName, infoJson) {
+    var app = appById(id); var info = {}; try { info = JSON.parse(infoJson || '{}') || {}; } catch (e) {}
+    if (!app) { S.busy[id] = null; render(); return; }
+    var inst = S.installed[app.package];
+    if (info.package && app.package && info.package !== app.package) { fail(id, 'the downloaded file is a different app (' + info.package + ')'); return; }
+    var rel = relFor(app);
+    if (rel && info.versionCode) { S.memory[app.package] = { fp: rel.fp, versionCode: info.versionCode }; store.set('memory', S.memory); }   // this file = this version
+    if (inst && inst.installed && info.versionCode && info.versionCode <= inst.versionCode) {
+      S.busy[id] = null; render();
+      toast(app.name + ' is already up to date (v' + (inst.versionName || inst.versionCode) + ')');
+      return;
+    }
+    S.busy[id] = 'installing'; render();
+    try { Native.install(fileName); } catch (e) { fail(id, String(e && e.message || e)); }
+  };
+  window.Suite_onError = function (id, msg) { fail(id, msg); };
+  var resumeT;
+  window.Suite_onResume = function () {
+    refreshInstalled(); render();
+    // installer closed without a change (cancelled / blocked)? -> drop the "Installing…" state a moment later
+    clearTimeout(resumeT);
+    resumeT = setTimeout(function () {
+      var stuck = Object.keys(S.busy).filter(function (id) { return S.busy[id] === 'installing'; });
+      if (!stuck.length) return;
+      refreshInstalled();
+      stuck.forEach(function (id) { if (S.busy[id] === 'installing') S.busy[id] = null; });
+      render();
+    }, 3000);
+  };
+  window.Suite_back = function () {
+    if (!$('#shade').classList.contains('hidden')) { closeSheet(); return true; }
+    if (!$('#menu').classList.contains('hidden')) { closeMenu(); return true; }
+    if (S.view === 'admin') { showView('home'); return true; }
+    return false;
+  };
+
+  /* ------------------------------------------------------------------ auth ------- */
+  function setSession(sess) { S.session = sess; store.set('session', sess && !sess.open ? sess : null); }
+  function logout(silent) {
+    setSession(null); S.users = null;
+    if (!silent) toast('Signed out');
+    showView('login'); render();
+  }
+  function doLogin(ev) {
+    if (ev) ev.preventDefault();
+    var email = $('#l-email').value.trim().toLowerCase(), pass = $('#l-pass').value;
+    var setup = !$('#l-setup').classList.contains('hidden');
+    var msg = $('#l-msg'); msg.classList.add('hidden');
+    if (!email) { showErr(msg, 'Enter your e-mail'); return; }
+    var data = { email: email, password: pass };
+    if (setup) {
+      var n1 = $('#l-new').value, n2 = $('#l-new2').value;
+      if (n1.length < 6) { showErr(msg, 'Password must be at least 6 characters'); return; }
+      if (n1 !== n2) { showErr(msg, 'Passwords do not match'); return; }
+      data.newPassword = n1;
+    } else if (!pass) { showErr(msg, 'Enter your password'); return; }
+    var btn = $('#l-btn'); btn.disabled = true; btn.textContent = 'Signing in…';
+    api('login', data).then(function (j) {
+      if (j && j.ok && j.token) {
+        setSession({ token: j.token, user: j.user || { email: email }, at: Date.now() });
+        $('#l-pass').value = ''; $('#l-new').value = ''; $('#l-new2').value = ''; $('#l-setup').classList.add('hidden'); $('#l-pass-wrap').classList.remove('hidden');
+        showView('home'); render(); refreshInstalled(); render(); checkReleases(true);
+      } else if (j && j.setup) {
+        $('#l-setup').classList.remove('hidden'); $('#l-pass-wrap').classList.add('hidden'); $('#l-new').focus();
+      } else showErr(msg, (j && j.error) || 'Sign-in failed');
+    }).catch(function (e) { showErr(msg, e.message || 'Cannot reach the server'); })
+      .then(function () { btn.disabled = false; btn.textContent = 'Sign in'; });
+  }
+  function showErr(el, t) { el.textContent = t; el.classList.remove('hidden'); }
+  function refreshMe() {
+    if (!hasBackend() || !S.session || S.session.open) return Promise.resolve();
+    return api('me').then(function (j) {
+      if (j && j.ok && j.user && String(j.user.status || 'active').toLowerCase() === 'active') { S.session.user = j.user; setSession(S.session); render(); }
+      else if (j && (j.ok === false || j.user)) { logout(true); toast(j.user ? 'Your access has been disabled' : 'Please sign in again'); }
+    }).catch(function () {});
+  }
+
+  /* ------------------------------------------------------------------ render ----- */
+  function showView(v) {
+    S.view = v;
+    ['login', 'home', 'admin'].forEach(function (x) { $('#v-' + x).classList.toggle('hidden', x !== v); });
+    var inApp = v !== 'login';
+    $('#b-menu').classList.toggle('hidden', !inApp);
+    $('#b-refresh').classList.toggle('hidden', !inApp);
+    if (v === 'admin') loadUsers();
+    window.scrollTo(0, 0);
+  }
+  function setSpin(on) { $('#b-refresh').classList.toggle('spin', !!on); }
+  function render() {
+    var u = S.session && S.session.user;
+    $('#hd-sub').textContent = S.session ? (S.session.open ? 'Open mode — no login' : ((u && (u.name || u.email)) || '') + (isAdmin() ? ' · Admin' : '')) : 'Company apps — one place';
+    if (S.view === 'login') renderLogin();
+    if (S.view === 'home') renderHome();
+    if (S.view === 'admin') renderUsers();
+  }
+  function renderLogin() {
+    var f = $('#l-foot');
+    f.innerHTML = (hasBackend() ? '' : '<div class="msg info" style="text-align:left">No login server is configured yet (<code>backend</code> in apps.json). Tap below to continue in open mode — every app is shown.</div><button class="btn block" id="l-open">Continue without login</button>') +
+      '<div style="margin-top:14px">' + verFoot() + '</div>';
+    var ob = $('#l-open'); if (ob) ob.onclick = function () { setSession({ open: true, user: { name: 'Guest', role: 'open', apps: '*' } }); showView('home'); render(); refreshInstalled(); render(); checkReleases(false); };
+  }
+  function renderHome() {
+    var u = S.session && S.session.user;
+    $('#h-hello').textContent = u && u.name && !S.session.open ? 'Hi, ' + u.name.split(' ')[0] : 'Your apps';
+    var apps = visibleApps();
+    $('#h-sub').textContent = apps.length ? apps.length + ' app' + (apps.length > 1 ? 's' : '') : '';
+    var g = $('#grid');
+    if (!apps.length) g.innerHTML = '<div class="empty card" style="grid-column:1/-1">' + (S.catalog.apps.length ? 'No apps have been assigned to your account yet.<br>Ask the admin to add you in the Suite access list.' : 'App catalogue could not be loaded. Check your internet connection and tap refresh.') + '</div>';
+    else g.innerHTML = apps.map(tileHtml).join('');
+    // suite self-update banner
+    var srel = Native.has ? relFor(suiteApp()) : null;
+    var sb = $('#suite-banner');
+    var show = !!(srel && srel.asset && srel.versionCode && srel.versionCode > Native.versionCode());
+    sb.classList.toggle('hidden', !show);
+    if (show) {
+      var b = S.busy.suite;
+      $('#suite-banner-txt').textContent = b === 'downloading' ? 'Downloading… ' + (S.progress.suite >= 0 ? S.progress.suite + '%' : '') : b === 'installing' ? 'Installing — confirm on screen' : 'Version ' + relLabel(srel).replace(/^v/, '') + ' · you have ' + Native.version();
+      $('#suite-banner-btn').disabled = !!b; $('#suite-banner-btn').textContent = b ? 'Please wait' : 'Update';
+    }
+    var anyStale = S.catalog.apps.some(function (a) { var r = S.releases[a.repo]; return r && r.error; });
+    $('#h-foot').innerHTML = verFoot() +
+      (anyStale ? '<br><span style="color:var(--warn)">Could not reach GitHub just now — showing last known versions.</span>' : '') +
+      '<br>Apps update automatically from each app\'s GitHub Releases.';
+  }
+  function tileHtml(app) {
+    var st = appStatus(app), rel = st.rel, inst = st.inst;
+    var icon = app.icon || 'icons/suite.png';
+    // icon not bundled in this APK (app added to apps.json later)? -> load it from the Suite repo instead
+    var rawIcon = S.catalog.suite && S.catalog.suite.catalog && !/^https?:/.test(icon) ? S.catalog.suite.catalog.replace(/apps\.json.*$/, '') + icon : '';
+    var h = '<div class="tile" data-id="' + esc(app.id) + '">';
+    h += '<img class="ic" src="' + esc(icon) + '" alt="" style="background:' + esc(app.color || '#eee') + '"' + (rawIcon ? ' onerror="if(!this.__r){this.__r=1;this.src=' + esc(JSON.stringify(rawIcon)).replace(/"/g, '&quot;') + '}"' : '') + '>';
+    h += '<div class="nm">' + esc(app.name) + '</div><div class="ds">' + esc(app.desc || '') + '</div>';
+    var badge = '', ver = '', acts = '';
+    var latest = rel ? relLabel(rel) : '';
+    switch (st.kind) {
+      case 'web':
+        badge = '<span class="badge info">Web</span>';
+        ver = latest ? 'Latest: <b>' + esc(latest) + '</b>' : (st.checked ? 'No APK release found' : 'Latest version: checking…');
+        acts = (rel && rel.asset ? '<button class="btn primary sm" data-act="install">Download APK</button>' : '') + (app.web ? '<button class="btn sm" data-act="web">Open web</button>' : '');
+        break;
+      case 'install':
+        badge = '<span class="badge">Not installed</span>';
+        ver = latest ? 'Latest: <b>' + esc(latest) + '</b>' : (rel ? 'No APK in the latest release' : (st.checked ? 'No APK release found (or GitHub unreachable)' : 'Checking latest version…'));
+        acts = '<button class="btn primary sm" data-act="install"' + (rel && rel.asset ? '' : ' disabled') + '>Install</button>' + (app.web ? '<button class="btn sm ghost" data-act="web">Web</button>' : '');
+        break;
+      case 'update':
+        badge = '<span class="badge warn">Update available</span>';
+        ver = 'Installed: <b>' + esc(inst.versionName || inst.versionCode) + '</b><br>New: <b>' + esc(latest) + '</b>';
+        acts = '<button class="btn gold sm" data-act="install">Update</button><button class="btn sm" data-act="open">Open</button>';
+        break;
+      case 'ok':
+        badge = '<span class="badge ok">Up to date</span>';
+        ver = 'Version <b>' + esc(inst.versionName || inst.versionCode) + '</b>';
+        acts = '<button class="btn primary sm" data-act="open">Open</button>';
+        break;
+      case 'unknown':
+        badge = '<span class="badge">Installed</span>';
+        ver = 'Version <b>' + esc(inst.versionName || inst.versionCode) + '</b><br><span style="color:var(--warn)">Couldn\'t check for updates</span>';
+        acts = '<button class="btn primary sm" data-act="open">Open</button>';
+        break;
+      case 'noasset':
+        badge = '<span class="badge">Installed</span>';
+        ver = 'Version <b>' + esc(inst.versionName || inst.versionCode) + '</b><br>No APK in latest release';
+        acts = '<button class="btn primary sm" data-act="open">Open</button>';
+        break;
+      case 'downloading':
+        badge = '<span class="badge info">Downloading</span>';
+        var pct = S.progress[app.id]; var ind = !(pct >= 0);
+        ver = '<div class="prog' + (ind ? ' ind' : '') + '" id="prog-' + esc(app.id) + '"><i style="width:' + (ind ? 40 : pct) + '%"></i></div><span id="progl-' + esc(app.id) + '">' + (ind ? 'Downloading…' : 'Downloading… ' + pct + '%') + '</span>';
+        acts = '<button class="btn sm" disabled>Please wait</button>';
+        break;
+      case 'installing':
+        badge = '<span class="badge info">Installing</span>';
+        ver = 'Confirm the install on screen.<br>If Android asks, allow "install unknown apps" for OakCraft Suite.';
+        acts = '<button class="btn sm" data-act="cancel">Done</button>';
+        break;
+    }
+    h += '<div>' + badge + '</div><div class="ver">' + ver + '</div><div class="acts">' + acts + '</div></div>';
+    return h;
+  }
+  $('#grid').addEventListener('click', function (ev) {
+    var b = ev.target.closest('button[data-act]'); if (!b) return;
+    var tile = ev.target.closest('.tile'); var app = tile && appById(tile.getAttribute('data-id')); if (!app) return;
+    var act = b.getAttribute('data-act');
+    if (act === 'install') startInstall(app.id);
+    else if (act === 'open') { if (!Native.launch(app.package)) { toast('Could not open ' + app.name); refreshInstalled(); render(); } }
+    else if (act === 'web') Native.open(app.web);
+    else if (act === 'cancel') { S.busy[app.id] = null; refreshInstalled(); render(); }
+  });
+  $('#suite-banner-btn').addEventListener('click', function () { startInstall('suite'); });
+
+  /* ------------------------------------------------------------------ menu ------- */
+  function openMenu() {
+    var m = $('#menu'); var h = '';
+    h += '<button data-m="refresh">⟳ Check for updates</button>';
+    if (hasBackend() && S.session && !S.session.open) h += '<button data-m="pass">🔑 Change password</button>';
+    if (isAdmin() && hasBackend()) h += '<button data-m="admin">👥 Users &amp; access</button>';
+    h += '<button data-m="about">ℹ️ About</button><div class="sep"></div>';
+    h += S.session && S.session.open ? '<button data-m="logout">↩ Back to login</button>' : '<button data-m="logout">⏏ Sign out</button>';
+    h += '<small>' + esc((S.session && S.session.user && S.session.user.email) || '') + '</small>';
+    m.innerHTML = h; m.classList.remove('hidden');
+    setTimeout(function () { document.addEventListener('click', closeMenu, { once: true }); }, 0);
+  }
+  function closeMenu() { $('#menu').classList.add('hidden'); }
+  $('#b-menu').addEventListener('click', function (ev) { ev.stopPropagation(); if ($('#menu').classList.contains('hidden')) openMenu(); else closeMenu(); });
+  $('#menu').addEventListener('click', function (ev) {
+    var b = ev.target.closest('button[data-m]'); if (!b) return; closeMenu();
+    var m = b.getAttribute('data-m');
+    if (m === 'refresh') refreshAll(true);
+    else if (m === 'pass') openPasswordSheet();
+    else if (m === 'admin') showView('admin');
+    else if (m === 'about') openAbout();
+    else if (m === 'logout') logout();
+  });
+  $('#b-refresh').addEventListener('click', function () { refreshAll(true); });
+  function refreshAll(force) {
+    refreshInstalled(); render(); refreshMe();
+    refreshCatalog().then(function () { return checkReleases(force); }).then(function () { if (force) toast('Checked for updates'); });
+  }
+
+  /* ------------------------------------------------------------------ sheets ----- */
+  function openSheet(html) { var s = $('#shade'); s.innerHTML = '<div class="sheet">' + html + '</div>'; s.classList.remove('hidden'); s.onclick = function (ev) { if (ev.target === s) closeSheet(); }; }
+  function closeSheet() { $('#shade').classList.add('hidden'); $('#shade').innerHTML = ''; }
+  function openAbout() {
+    var u = S.session && S.session.user;
+    var srel = relFor(suiteApp());
+    openSheet('<h3>OakCraft Suite</h3><div class="kv">Version <b>' + esc(Native.version()) + '</b>' + (Native.has ? ' (code ' + Native.versionCode() + ')' : ' · web') +
+      (srel ? '<br>Latest release: <b>' + esc(relLabel(srel)) + '</b>' + (srel.versionCode ? ' (code ' + srel.versionCode + ')' : '') : '') +
+      '<br>Catalogue: <b>' + S.catalog.apps.length + ' apps</b>' + (S.catalog.fetchedAt ? ' · synced ' + fmtDate(S.catalog.fetchedAt) : ' · bundled') +
+      '<br>Login server: <b>' + (hasBackend() ? 'configured' : 'not set (open mode)') + '</b>' +
+      (u && !S.session.open ? '<br>Signed in as <b>' + esc(u.name || '') + '</b> ' + esc(u.email || '') + ' · ' + esc(u.role || 'user') : '') +
+      '</div><div class="row"><button class="btn primary" id="ab-ok">OK</button></div>');
+    $('#ab-ok').onclick = closeSheet;
+  }
+  function openPasswordSheet() {
+    openSheet('<h3>Change password</h3><label class="f">Current password</label><input class="t" id="p-old" type="password" autocomplete="current-password"><label class="f">New password</label><input class="t" id="p-new" type="password" autocomplete="new-password"><label class="f">Confirm new password</label><input class="t" id="p-new2" type="password" autocomplete="new-password"><div id="p-msg" class="msg err hidden"></div><div class="row"><button class="btn ghost" id="p-cancel">Cancel</button><button class="btn primary" id="p-save">Save</button></div>');
+    $('#p-cancel').onclick = closeSheet;
+    $('#p-save').onclick = function () {
+      var o = $('#p-old').value, n = $('#p-new').value, n2 = $('#p-new2').value, msg = $('#p-msg');
+      if (n.length < 6) { showErr(msg, 'New password must be at least 6 characters'); return; }
+      if (n !== n2) { showErr(msg, 'Passwords do not match'); return; }
+      this.disabled = true;
+      api('setPassword', { oldPassword: o, newPassword: n }).then(function (j) { if (j && j.ok) { closeSheet(); toast('Password changed'); } else showErr(msg, (j && j.error) || 'Failed'); })
+        .catch(function (e) { showErr(msg, e.message); }).then(function () { var b = $('#p-save'); if (b) b.disabled = false; });
+    };
+  }
+
+  /* ------------------------------------------------------------------ admin ------ */
+  function loadUsers() {
+    var el = $('#a-list'); el.innerHTML = '<div class="empty">Loading…</div>';
+    api('users.list').then(function (j) { S.users = j && j.ok ? (j.users || []) : []; if (j && !j.ok) toast(j.error || 'Failed to load users'); renderUsers(); })
+      .catch(function (e) { S.users = []; el.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; });
+  }
+  function renderUsers() {
+    var el = $('#a-list'); if (!S.users) return;
+    if (!S.users.length) { el.innerHTML = '<div class="empty card">No users yet — tap “Add user”.</div>'; return; }
+    el.innerHTML = S.users.map(function (u, i) {
+      var apps = u.apps === '*' || u.apps === 'all' ? 'All apps' : (Array.isArray(u.apps) ? u.apps : String(u.apps || '').split(/[,\s]+/)).filter(Boolean).map(function (id) { var a = appById(id); return a ? a.name : id; }).join(', ') || 'No apps';
+      var active = String(u.status || 'active').toLowerCase() === 'active';
+      return '<div class="urow" data-i="' + i + '"><div class="un">' + esc(u.name || u.email) + '</div><button class="btn sm" data-edit="' + i + '">Edit</button><div class="ue">' + esc(u.email) + '</div>' +
+        '<div class="ua">' + esc(apps) + '</div><div class="ub">' + (/admin/i.test(u.role || '') ? '<span class="badge info">Admin</span>' : '<span class="badge">User</span>') +
+        (active ? '<span class="badge ok">Active</span>' : '<span class="badge err">Disabled</span>') + (u.hasPassword === false ? '<span class="badge warn">no password yet</span>' : '') + '</div></div>';
+    }).join('');
+  }
+  $('#a-list').addEventListener('click', function (ev) { var b = ev.target.closest('button[data-edit]'); if (b) openUserSheet(S.users[+b.getAttribute('data-edit')]); });
+  $('#a-add').addEventListener('click', function () { openUserSheet(null); });
+  $('#a-back').addEventListener('click', function () { showView('home'); render(); });
+  function openUserSheet(u) {
+    var isNew = !u; u = u || { email: '', name: '', role: 'user', apps: [], status: 'active' };
+    var list = u.apps === '*' || u.apps === 'all' ? ['*'] : (Array.isArray(u.apps) ? u.apps : String(u.apps || '').split(/[,\s]+/)).filter(Boolean).map(function (x) { return x.toLowerCase(); });
+    var chips = '<label class="chip' + (list.indexOf('*') >= 0 ? ' on' : '') + '"><input type="checkbox" value="*"' + (list.indexOf('*') >= 0 ? ' checked' : '') + '> All apps</label>' +
+      S.catalog.apps.map(function (a) { var on = list.indexOf(a.id.toLowerCase()) >= 0; return '<label class="chip' + (on ? ' on' : '') + '"><input type="checkbox" value="' + esc(a.id) + '"' + (on ? ' checked' : '') + '> ' + esc(a.name) + '</label>'; }).join('');
+    openSheet('<h3>' + (isNew ? 'Add user' : 'Edit user') + '</h3>' +
+      '<label class="f">E-mail</label><input class="t" id="u-email" type="email" autocapitalize="off" value="' + esc(u.email) + '"' + (isNew ? '' : ' readonly') + '>' +
+      '<label class="f">Name</label><input class="t" id="u-name" value="' + esc(u.name || '') + '">' +
+      '<label class="f">Role</label><select class="t" id="u-role"><option value="user"' + (/admin/i.test(u.role || '') ? '' : ' selected') + '>User</option><option value="admin"' + (/admin/i.test(u.role || '') ? ' selected' : '') + '>Admin (sees all apps + this screen)</option></select>' +
+      '<label class="f">Apps this user can see</label><div class="chips" id="u-apps">' + chips + '</div>' +
+      '<label class="f">Status</label><select class="t" id="u-status"><option value="active"' + (String(u.status || 'active').toLowerCase() === 'active' ? ' selected' : '') + '>Active</option><option value="disabled"' + (String(u.status || '').toLowerCase() === 'disabled' ? ' selected' : '') + '>Disabled (cannot sign in)</option></select>' +
+      '<div id="u-msg" class="msg err hidden"></div>' +
+      '<div class="row"><button class="btn ghost" id="u-cancel">Cancel</button><button class="btn primary" id="u-save">Save</button></div>' +
+      (isNew ? '<div class="kv" style="margin-top:10px">The user creates their own password at first sign-in.</div>' : '<div class="row"><button class="btn sm" id="u-reset">Reset password</button><button class="btn sm danger" id="u-del">Remove user</button></div>'));
+    $('#u-apps').addEventListener('change', function (ev) {
+      var cb = ev.target; if (cb.type !== 'checkbox') return;
+      if (cb.value === '*' && cb.checked) $$('#u-apps input').forEach(function (x) { if (x !== cb) x.checked = false; });
+      else if (cb.value !== '*' && cb.checked) { var all = $('#u-apps input[value="*"]'); if (all) all.checked = false; }
+      $$('#u-apps .chip').forEach(function (c) { c.classList.toggle('on', c.querySelector('input').checked); });
+    });
+    $('#u-cancel').onclick = closeSheet;
+    $('#u-save').onclick = function () {
+      var msg = $('#u-msg');
+      var email = $('#u-email').value.trim().toLowerCase();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { showErr(msg, 'Enter a valid e-mail'); return; }
+      var apps = $$('#u-apps input:checked').map(function (x) { return x.value; });
+      var rec = { email: email, name: $('#u-name').value.trim(), role: $('#u-role').value, apps: apps.indexOf('*') >= 0 ? '*' : apps.join(','), status: $('#u-status').value };
+      this.disabled = true;
+      api('users.save', { user: rec }).then(function (j) { if (j && j.ok) { closeSheet(); toast('Saved'); loadUsers(); } else showErr(msg, (j && j.error) || 'Failed'); })
+        .catch(function (e) { showErr(msg, e.message); }).then(function () { var b = $('#u-save'); if (b) b.disabled = false; });
+    };
+    var rb = $('#u-reset'); if (rb) rb.onclick = function () {
+      if (!confirm('Reset password for ' + u.email + '? They will create a new one at next sign-in.')) return;
+      api('users.resetPassword', { email: u.email }).then(function (j) { if (j && j.ok) { closeSheet(); toast('Password reset'); loadUsers(); } else toast((j && j.error) || 'Failed'); }).catch(function (e) { toast(e.message); });
+    };
+    var db = $('#u-del'); if (db) db.onclick = function () {
+      if (!confirm('Remove ' + u.email + ' from the Suite?')) return;
+      api('users.delete', { email: u.email }).then(function (j) { if (j && j.ok) { closeSheet(); toast('Removed'); loadUsers(); } else toast((j && j.error) || 'Failed'); }).catch(function (e) { toast(e.message); });
+    };
+  }
+
+  /* ------------------------------------------------------------------ misc ------- */
+  var toastT;
+  function toast(t) { var el = $('#toast'); el.textContent = t; el.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(function () { el.classList.remove('show'); }, 2600); }
+  $('#f-login').addEventListener('submit', doLogin);
+  $('#l-email').addEventListener('input', function () { if (!$('#l-setup').classList.contains('hidden')) { $('#l-setup').classList.add('hidden'); $('#l-pass-wrap').classList.remove('hidden'); } });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && S.view === 'home') { refreshInstalled(); render(); checkReleases(false); } });
+
+  /* ------------------------------------------------------------------ boot ------- */
+  loadCatalog().then(function () {
+    if (!hasBackend()) {
+      // no login server -> open mode (remembered session is ignored)
+      setSession({ open: true, user: { name: 'Guest', role: 'open', apps: '*' } });
+    } else if (S.session && S.session.open) setSession(null);
+    if (S.session) { showView('home'); refreshInstalled(); render(); refreshMe(); checkReleases(false); }
+    else { showView('login'); render(); }
+    refreshCatalog();
+  });
+  window.__suite = { S: S, Native: Native, api: api, render: render, checkReleases: checkReleases, relFor: relFor, needsUpdate: needsUpdate, appStatus: appStatus, visibleApps: visibleApps, refreshInstalled: refreshInstalled, appById: appById };
+})();
+</script>
+</body>
+</html>

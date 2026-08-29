@@ -1,0 +1,49 @@
+{
+  "_comment": "OakCraft Suite catalogue. The Suite app reads THIS file from the repo at runtime (raw.githubusercontent.com), so editing it here updates every phone without a new Suite APK. Each app's newest APK is found automatically in that repo's GitHub Releases. Fields: id, name, desc, package (Android applicationId), repo (owner/name), asset (regex for the .apk asset name), web (optional browser link), icon, color, workflow (optional: workflow file whose successful run number == versionCode, for repos that keep one 'latest' release), versionNamePattern (optional, e.g. 1.0.{run}).",
+  "version": 1,
+  "suite": {
+    "name": "OakCraft Suite",
+    "repo": "Weboakcraft/Oakcraft_Suite",
+    "catalog": "https://raw.githubusercontent.com/Weboakcraft/Oakcraft_Suite/main/www/apps.json"
+  },
+  "backend": "",
+  "apps": [
+    {
+      "id": "crm",
+      "name": "OakCraft CRM",
+      "desc": "Enquiry → Quotation → Order → Dispatch",
+      "package": "in.oakcraft.crm",
+      "repo": "Weboakcraft/Oakcraft_Sales_CRM",
+      "asset": "\\.apk$",
+      "web": "https://weboakcraft.github.io/Oakcraft_Sales_CRM/",
+      "icon": "icons/crm.png",
+      "color": "#0F1729"
+    },
+    {
+      "id": "stock",
+      "name": "OakCraft Stock",
+      "desc": "Stock & inventory software",
+      "package": "in.oakcraft.stock",
+      "repo": "Weboakcraft/New_Stock_Software",
+      "asset": "oakcraft-stock.apk",
+      "web": "https://weboakcraft.github.io/New_Stock_Software/",
+      "icon": "icons/stock.png",
+      "color": "#1E1A14",
+      "workflow": "android.yml",
+      "versionNamePattern": "1.0.{run}"
+    },
+    {
+      "id": "attendance",
+      "name": "OakCraft Attendance",
+      "desc": "Daily attendance & leave",
+      "package": "in.oakcraft.attendance",
+      "repo": "Weboakcraft/oakcraft_attendance",
+      "asset": "oakcraft-attendance.apk",
+      "web": "https://weboakcraft.github.io/oakcraft_attendance/",
+      "icon": "icons/attendance.png",
+      "color": "#0B1A2A",
+      "workflow": "android.yml",
+      "versionNamePattern": "1.0.{run}"
+    }
+  ]
+}

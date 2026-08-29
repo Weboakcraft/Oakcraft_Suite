@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OakCraft Suite</string>
+    <string name="press_back_again">Press back again to exit</string>
+    <string name="no_app">No app found to open this</string>
+    <string name="file_missing">Downloaded file is missing — please download again</string>
+    <string name="allow_unknown">Allow OakCraft Suite to install apps, then come back</string>
+    <string name="install_failed">Could not start the installer</string>
+</resources>
