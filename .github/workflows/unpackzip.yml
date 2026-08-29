@@ -1,0 +1,51 @@
+name: Unpack uploaded zip
+
+# Bade updates ke liye shortcut: repo ke root me  upload.zip  (ya upload-*.zip / suitebundle.zip)
+# upload karke commit karo -> yeh workflow usko repo me unpack karke commit kar deta hai aur zip
+# hata deta hai, phir Suite APK build chala deta hai.
+# Zip ke andar files repo-root ke hisaab se rakhein (www/..., android/..., README.md ...).
+# Note: .github/workflows/ ke andar ki files zip se nahi aa sakti (GitHub rule) — unhe alag upload karein.
+
+on:
+  push:
+    branches: [main]
+    paths: ["upload.zip", "upload-*.zip", "upload*.zip", "suitebundle.zip"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  unpack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Unpack + commit
+        id: unpack
+        run: |
+          set -e
+          shopt -s nullglob
+          zips=(upload.zip upload-*.zip upload*.zip suitebundle.zip)
+          zips=($(printf '%s\n' "${zips[@]}" | sort -u))
+          [ ${#zips[@]} -gt 0 ] || { echo "No zip at repo root — nothing to do"; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; }
+          for z in "${zips[@]}"; do
+            echo "== unpacking $z"
+            unzip -o -q "$z" -x '.github/workflows/*' '__MACOSX/*' '*/.DS_Store' '.DS_Store' -d .
+            rm -f "$z"
+          done
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then echo "nothing changed"; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          git commit -m "Unpack uploaded zip: ${zips[*]}"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "Unpacked ${zips[*]} — $(git show --stat --oneline HEAD | tail -1)"
+
+      - name: Build the Suite APK from the new files
+        if: steps.unpack.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run suiteapk.yml --ref main && echo "Suite APK build started (see Actions > Build Suite APK)" || echo "suiteapk.yml not found — upload it to .github/workflows/ and run it manually"

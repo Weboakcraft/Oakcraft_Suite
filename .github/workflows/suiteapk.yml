@@ -1,0 +1,78 @@
+name: Build Suite APK
+
+# Har push par (jab www/ ya android/ badle) ek fresh Suite APK ban kar GitHub Release
+# (tag apk-<run>) me attach ho jaati hai. Installed Suite app khud is release ko dekh kar
+# "Suite update available" dikhati hai.
+#
+# Release signing (zaroori — warna purani app ke upar update install nahi hogi):
+#   repo Settings > Secrets and variables > Actions me add karein
+#   ANDROID_KEYSTORE_B64  = base64 of the release .jks   (same keystore as OakCraft CRM chal jayega)
+#   ANDROID_KEYSTORE_PASS = keystore password
+#   ANDROID_KEY_ALIAS     = oakcraft
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "www/**"
+      - "android/**"
+      - .github/workflows/suiteapk.yml
+  workflow_dispatch:
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      HAS_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_B64 != '' }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Android build-tools + platform
+        run: |
+          SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKM" --licenses >/dev/null 2>&1 || true
+          "$SDKM" "build-tools;34.0.0" "platforms;android-34" >/dev/null
+          ls "$ANDROID_HOME/build-tools/34.0.0/aapt" "$ANDROID_HOME/platforms/android-34/android.jar"
+
+      - name: Restore release keystore
+        if: env.HAS_KEYSTORE == 'true'
+        run: echo "${{ secrets.ANDROID_KEYSTORE_B64 }}" | base64 -d > "$RUNNER_TEMP/release.jks"
+
+      - name: Build APK
+        env:
+          KEYSTORE_PASS: ${{ secrets.ANDROID_KEYSTORE_PASS }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          export BUILD_TOOLS="$ANDROID_HOME/build-tools/34.0.0" ANDROID_JAR="$ANDROID_HOME/platforms/android-34/android.jar"
+          if [ "$HAS_KEYSTORE" = "true" ]; then export KEYSTORE="$RUNNER_TEMP/release.jks"; fi
+          export VERSION_CODE="$(date +%y%m%d%H)"
+          export VERSION_NAME="1.0.$(date +%Y%m%d).${{ github.run_number }}"
+          bash android/build.sh
+          echo "APK_PATH=$(ls android/build/*.apk)" >> "$GITHUB_ENV"
+          echo "VERSION_CODE=$VERSION_CODE" >> "$GITHUB_ENV"
+          echo "VERSION_NAME=$VERSION_NAME" >> "$GITHUB_ENV"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OakCraft-Suite-apk
+          path: android/build/*.apk
+          if-no-files-found: error
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-${{ github.run_number }}
+          name: OakCraft Suite build ${{ github.run_number }}
+          body: |
+            versionCode: ${{ env.VERSION_CODE }}
+            versionName: ${{ env.VERSION_NAME }}
+            Auto-built from commit ${{ github.sha }}.
+            Signing: ${{ env.HAS_KEYSTORE == 'true' && 'release keystore' || 'DEBUG key (add ANDROID_KEYSTORE_* secrets for release signing)' }}
+          files: android/build/*.apk
