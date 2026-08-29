@@ -27,7 +27,8 @@ jobs:
         run: |
           set -e
           shopt -s nullglob
-          zips=(upload.zip upload-*.zip upload*.zip suitebundle.zip)
+          zips=()
+          for z in upload.zip upload-*.zip upload*.zip suitebundle.zip; do [ -f "$z" ] && zips+=("$z"); done
           zips=($(printf '%s\n' "${zips[@]}" | sort -u))
           [ ${#zips[@]} -gt 0 ] || { echo "No zip at repo root — nothing to do"; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; }
           for z in "${zips[@]}"; do
