@@ -255,18 +255,26 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
 
   /* ------------------------------------------------------------------ backend ---- */
   function hasBackend() { return !!S.catalog.backend; }
-  function api(action, data) {
+  function api(action, data, attempt) {
     var url = S.catalog.backend;
     if (!url) return Promise.reject(new Error('No backend configured'));
     var body = Object.assign({ action: action }, data || {});
     if (S.session && S.session.token && !body.token) body.token = S.session.token;
-    return fetch(url, { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
-      .then(function (r) { return r.text(); })
+    attempt = attempt || 1;
+    var status = 0;
+    return fetch(url, { method: 'POST', redirect: 'follow', cache: 'no-store', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
+      .then(function (r) { status = r.status; return r.text(); })
       .then(function (t) {
-        var j; try { j = JSON.parse(t); } catch (e) { throw new Error('Unexpected reply from server'); }
-        if (j && j.ok === false && j.error === 'auth') { logout(true); throw new Error('Session expired — please sign in again'); }
+        var j; try { j = JSON.parse(t); } catch (e) { j = undefined; }
+        if (j === undefined || j === null || typeof j !== 'object') {
+          // Google sometimes answers an Apps Script call with a transient HTML page — retry once, then explain
+          if (attempt < 2) return new Promise(function (res) { setTimeout(res, 900); }).then(function () { return api(action, data, attempt + 1); });
+          var snippet = String(t || '').replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 90);
+          throw new Error('Unexpected reply from server (HTTP ' + status + (snippet ? ': ' + snippet : '') + ')');
+        }
+        if (j.ok === false && j.error === 'auth') { logout(true); throw new Error('Session expired — please sign in again'); }
         return j;
-      });
+      }, function (e) { throw new Error(/Failed to fetch|NetworkError|network/i.test(String(e && e.message)) ? 'Cannot reach the login server — check internet' : String(e && e.message || e)); });
   }
 
   /* ------------------------------------------------------------------ catalogue -- */
