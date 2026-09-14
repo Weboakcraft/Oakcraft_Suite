@@ -1,0 +1,40 @@
+{
+  "_comment": "Ye file aap ke control me hai - auto-sync ise kabhi nahi badalta. Yahan likhi har cheez APK se nikaali gayi value ke upar lag jaati hai. 'ignore' me repo ka naam daalne se wo Suite me nahi aayega. 'order' tiles ka kram set karta hai. 'apps' ki key repo ka poora naam hai (owner/repo).",
+  "ignore": [],
+  "order": [
+    "crm",
+    "stock",
+    "attendance",
+    "returns"
+  ],
+  "apps": {
+    "Weboakcraft/Oakcraft_Sales_CRM": {
+      "id": "crm",
+      "name": "OakCraft CRM",
+      "desc": "Enquiry → Quotation → Order → Dispatch",
+      "icon": "icons/crm.png",
+      "color": "#0F1729"
+    },
+    "Weboakcraft/New_Stock_Software": {
+      "id": "stock",
+      "name": "OakCraft Stock",
+      "desc": "Stock & inventory software",
+      "icon": "icons/stock.png",
+      "color": "#1E1A14"
+    },
+    "Weboakcraft/oakcraft_attendance": {
+      "id": "attendance",
+      "name": "OakCraft Attendance",
+      "desc": "Daily attendance & leave",
+      "icon": "icons/attendance.png",
+      "color": "#0B1A2A"
+    },
+    "Weboakcraft/oc_return_management": {
+      "id": "returns",
+      "name": "OakCraft Return Desk",
+      "desc": "Return / replacement tracking",
+      "icon": "icons/returns.png",
+      "color": "#0E3B3C"
+    }
+  }
+}

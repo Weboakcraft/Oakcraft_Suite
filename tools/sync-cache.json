@@ -1,0 +1,69 @@
+{
+ "532330842": {
+  "iconPaths": [
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml"
+  ],
+  "label": "Oakcraft Stock",
+  "package": "in.oakcraft.stock",
+  "versionCode": "5",
+  "versionName": "1.0.5",
+  "versionNamePattern": "1.0.{run}",
+  "workflow": "android.yml"
+ },
+ "533985231": {
+  "iconPaths": [
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml"
+  ],
+  "label": "OakCraft Attendance",
+  "package": "in.oakcraft.attendance",
+  "versionCode": "1",
+  "versionName": "1.0.1",
+  "versionNamePattern": "1.0.{run}",
+  "workflow": "android.yml"
+ },
+ "554745906": {
+  "iconPaths": [
+   "res/mipmap-anydpi-v26/ic_launcher.xml",
+   "res/mipmap-anydpi-v26/ic_launcher.xml",
+   "res/mipmap-anydpi-v26/ic_launcher.xml",
+   "res/mipmap-anydpi-v26/ic_launcher.xml"
+  ],
+  "label": "OakCraft CRM",
+  "package": "in.oakcraft.crm",
+  "versionCode": "29817242",
+  "versionName": "1.1.20260910.42",
+  "versionNamePattern": null,
+  "workflow": null
+ },
+ "559287002": {
+  "iconPaths": [
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml"
+  ],
+  "label": "Return Desk",
+  "package": "com.returndesk.app",
+  "versionCode": "1",
+  "versionName": "1.0",
+  "versionNamePattern": null,
+  "workflow": null
+ }
+}

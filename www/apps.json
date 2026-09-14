@@ -14,10 +14,10 @@
       "desc": "Enquiry → Quotation → Order → Dispatch",
       "package": "in.oakcraft.crm",
       "repo": "Weboakcraft/Oakcraft_Sales_CRM",
-      "asset": "\\.apk$",
-      "web": "https://weboakcraft.github.io/Oakcraft_Sales_CRM/",
+      "asset": "^(?!.*(?:debug|testing)).+\\.apk$",
       "icon": "icons/crm.png",
-      "color": "#0F1729"
+      "color": "#0F1729",
+      "web": "https://weboakcraft.github.io/Oakcraft_Sales_CRM/"
     },
     {
       "id": "stock",
@@ -25,10 +25,10 @@
       "desc": "Stock & inventory software",
       "package": "in.oakcraft.stock",
       "repo": "Weboakcraft/New_Stock_Software",
-      "asset": "oakcraft-stock.apk",
-      "web": "https://weboakcraft.github.io/New_Stock_Software/",
+      "asset": "^(?!.*(?:debug|testing)).+\\.apk$",
       "icon": "icons/stock.png",
       "color": "#1E1A14",
+      "web": "https://weboakcraft.github.io/New_Stock_Software/",
       "workflow": "android.yml",
       "versionNamePattern": "1.0.{run}"
     },
@@ -38,10 +38,10 @@
       "desc": "Daily attendance & leave",
       "package": "in.oakcraft.attendance",
       "repo": "Weboakcraft/oakcraft_attendance",
-      "asset": "oakcraft-attendance.apk",
-      "web": "https://weboakcraft.github.io/oakcraft_attendance/",
+      "asset": "^(?!.*(?:debug|testing)).+\\.apk$",
       "icon": "icons/attendance.png",
       "color": "#0B1A2A",
+      "web": "https://weboakcraft.github.io/oakcraft_attendance/",
       "workflow": "android.yml",
       "versionNamePattern": "1.0.{run}"
     },
@@ -51,10 +51,10 @@
       "desc": "Return / replacement tracking",
       "package": "com.returndesk.app",
       "repo": "Weboakcraft/oc_return_management",
-      "asset": "app-release\\.apk$",
-      "web": "https://weboakcraft.github.io/oc_return_management/",
+      "asset": "^(?!.*(?:debug|testing)).+\\.apk$",
       "icon": "icons/returns.png",
-      "color": "#0E3B3C"
+      "color": "#0E3B3C",
+      "web": "https://weboakcraft.github.io/oc_return_management/"
     }
   ]
 }
