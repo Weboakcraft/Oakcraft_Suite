@@ -34,21 +34,7 @@
   "versionNamePattern": "1.0.{run}",
   "workflow": "android.yml"
  },
- "554745906": {
-  "iconPaths": [
-   "res/mipmap-anydpi-v26/ic_launcher.xml",
-   "res/mipmap-anydpi-v26/ic_launcher.xml",
-   "res/mipmap-anydpi-v26/ic_launcher.xml",
-   "res/mipmap-anydpi-v26/ic_launcher.xml"
-  ],
-  "label": "OakCraft CRM",
-  "package": "in.oakcraft.crm",
-  "versionCode": "29817242",
-  "versionName": "1.1.20260910.42",
-  "versionNamePattern": null,
-  "workflow": null
- },
- "559287002": {
+ "563277612": {
   "iconPaths": [
    "res/BW.xml",
    "res/BW.xml",
@@ -61,8 +47,22 @@
   ],
   "label": "Return Desk",
   "package": "com.returndesk.app",
-  "versionCode": "1",
-  "versionName": "1.0",
+  "versionCode": "29823097",
+  "versionName": "1.2.4",
+  "versionNamePattern": null,
+  "workflow": null
+ },
+ "563411781": {
+  "iconPaths": [
+   "res/mipmap-anydpi-v26/ic_launcher.xml",
+   "res/mipmap-anydpi-v26/ic_launcher.xml",
+   "res/mipmap-anydpi-v26/ic_launcher.xml",
+   "res/mipmap-anydpi-v26/ic_launcher.xml"
+  ],
+  "label": "OakCraft CRM",
+  "package": "in.oakcraft.crm",
+  "versionCode": "29823183",
+  "versionName": "1.1.20260914.45",
   "versionNamePattern": null,
   "workflow": null
  }
