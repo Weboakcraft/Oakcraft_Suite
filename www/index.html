@@ -51,6 +51,7 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
 /* home */
 .banner{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-radius:var(--r);padding:12px 14px;margin-bottom:14px;box-shadow:0 4px 14px rgba(15,23,41,.28)}
 .banner img{width:44px;height:44px;border-radius:12px}
+.banner .ub-ic{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:20px;flex:none}
 .banner .bt{flex:1;min-width:0;font-size:13px}
 .banner .bt b{display:block;font-size:14px}
 .banner .btn{background:var(--gold);color:#1B1B1B}
@@ -158,6 +159,11 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
 
   <!-- ===================== HOME ===================== -->
   <section id="v-home" class="view hidden">
+    <div id="upd-banner" class="banner hidden">
+      <div class="ub-ic">⬆</div>
+      <div class="bt"><b id="upd-banner-ttl"></b><span id="upd-banner-txt"></span></div>
+      <button class="btn sm" id="upd-banner-btn">Update all</button>
+    </div>
     <div class="hello"><h2 id="h-hello">Your apps</h2><small id="h-sub"></small></div>
     <div id="grid" class="grid"></div>
     <div class="foot" id="h-foot"></div>
@@ -222,6 +228,9 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
     releases: store.get('releases', {}) || {}, // repo -> normalised release (+checkedAt)
     memory: store.get('memory', {}) || {},   // package -> {fp, versionCode}  (what we last installed)
     busy: {},                                // appId -> 'downloading' | 'installing'
+    queue: [],                               // "Update all" / auto-update ki kataar (ek time par ek)
+    auto: store.get('autoUpdate', false),    // auto-update chalu hai ya nahi (default: band)
+    autoTried: {},                           // package+file -> auto-update ek hi baar try ho
     progress: {},                            // appId -> pct
     view: 'login',
     users: null                              // admin list
@@ -365,7 +374,7 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
         else S.releases[r] = { error: true, checkedAt: now };
       });
       store.set('releases', S.releases);
-      setSpin(false); render();
+      setSpin(false); render(); maybeAutoUpdate();
     }).catch(function () { setSpin(false); });
   }
   function relFor(app) {
@@ -448,6 +457,7 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
         var rel = relFor(a);
         if (rel) S.memory[a.package] = { fp: rel.fp, versionCode: now.versionCode };
         S.busy[a.id] = null; toast(a.name + ' ' + (prev.installed ? 'updated' : 'installed') + ' ✓');
+        setTimeout(pumpQueue, 400);                      // kataar me agla app
       }
     });
     store.set('memory', S.memory);
@@ -464,6 +474,47 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
     return { kind: needsUpdate(app, inst, rel) ? 'update' : 'ok', inst: inst, rel: rel };
   }
 
+  /* ------------------------------------------------- update all / auto-update ----- */
+  /** Wo apps jinka naya version aa chuka hai (Suite khud isme nahi - uska apna banner hai). */
+  function updatableApps() {
+    if (!Native.has) return [];
+    return visibleApps().filter(function (a) { return appStatus(a).kind === 'update'; });
+  }
+  function anyBusy() {
+    return Object.keys(S.busy).some(function (k) { return S.busy[k]; });
+  }
+  /** Kataar me se agla app uthata hai. Ek time par sirf ek install - Android do
+      installer dialog ek saath nahi sambhaal sakta. */
+  function pumpQueue() {
+    if (!Native.has || anyBusy()) return;
+    while (S.queue.length) {
+      var id = S.queue.shift(), app = appById(id);
+      if (app && appStatus(app).kind === 'update') { startInstall(id); return; }
+    }
+  }
+  function queueUpdates(apps) {
+    var ids = apps.map(function (a) { return a.id; });
+    if (!ids.length) return;
+    S.queue = ids; render(); pumpQueue();
+  }
+  function stopQueue() { S.queue = []; }
+  /** Auto-update chalu ho to naya version milte hi apne aap download + installer.
+      Har file ke liye sirf ek baar - user ne cancel kiya to baar-baar nahi poochha jayega. */
+  function maybeAutoUpdate() {
+    if (!S.auto || !Native.has || anyBusy() || S.queue.length) return;
+    var pending = updatableApps().filter(function (a) {
+      var rel = relFor(a), k = a.package + '@' + ((rel && rel.fp) || '');
+      if (S.autoTried[k]) return false;
+      S.autoTried[k] = 1; return true;
+    });
+    if (pending.length) queueUpdates(pending);
+  }
+  function setAuto(on) {
+    S.auto = !!on; store.set('autoUpdate', S.auto); S.autoTried = {};
+    toast(S.auto ? 'Auto-update on — naye version apne aap download honge' : 'Auto-update off');
+    render(); if (S.auto) maybeAutoUpdate();
+  }
+
   /* ------------------------------------------------------------------ install ----- */
   function startInstall(id) {
     var app = appById(id); if (!app) return;
@@ -475,7 +526,7 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
     try { Native.download(id, rel.asset.url, name); } catch (e) { fail(id, String(e && e.message || e)); }
   }
   function fail(id, msg) {
-    S.busy[id] = null; render();
+    S.busy[id] = null; stopQueue(); render();            // ek fail hua to baaki rok do
     var t = String(msg || 'failed');
     if (/HTTP 403|HTTP 429/.test(t)) t = 'GitHub is rate-limiting this network — try again in a few minutes';
     else if (/Unable to resolve host|Network is unreachable|timed out|ENETUNREACH|ETIMEDOUT/i.test(t)) t = 'No internet connection';
@@ -578,6 +629,7 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
     var u = S.session && S.session.user;
     $('#hd-sub').textContent = S.session ? (S.session.open ? 'Open mode — no login' : ((u && (u.name || u.email)) || '') + (isAdmin() ? ' · Admin' : '')) : 'Company apps — one place';
     renderSuiteBanner();
+    renderUpdatesBanner();
     if (S.view === 'login') renderLogin();
     if (S.view === 'home') renderHome();
     if (S.view === 'admin') renderUsers();
@@ -592,6 +644,22 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
     $('#suite-banner-txt').textContent = b === 'downloading' ? 'Downloading… ' + (S.progress.suite >= 0 ? S.progress.suite + '%' : '') : b === 'installing' ? 'Installing — confirm on screen' : 'Version ' + relLabel(srel).replace(/^v/, '') + ' · you have ' + Native.version();
     $('#suite-banner-btn').disabled = !!b; $('#suite-banner-btn').textContent = b ? 'Please wait' : 'Update';
   }
+  function renderUpdatesBanner() {
+    var b = $('#upd-banner'); if (!b) return;
+    var list = S.view === 'home' ? updatableApps() : [];
+    var show = list.length >= 2 || (list.length && S.queue.length);
+    b.classList.toggle('hidden', !show);
+    if (!show) return;
+    var left = S.queue.length + (anyBusy() ? 1 : 0);
+    $('#upd-banner-ttl').textContent = left
+      ? 'Updating — ' + left + ' baaki'
+      : list.length + ' apps ka naya version hai';
+    $('#upd-banner-txt').textContent = left
+      ? 'Har app par Android apna confirm poochhega.'
+      : list.map(function (a) { return a.name; }).join(', ');
+    var btn = $('#upd-banner-btn');
+    btn.disabled = !!left; btn.textContent = left ? 'Please wait' : 'Update all';
+  }
   function renderLogin() {
     var f = $('#l-foot');
     f.innerHTML = (hasBackend() ? '' : '<div class="msg info" style="text-align:left">No login server is configured yet (<code>backend</code> in apps.json). Tap below to continue in open mode — every app is shown.</div><button class="btn block" id="l-open">Continue without login</button>') +
@@ -602,7 +670,8 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
     var u = S.session && S.session.user;
     $('#h-hello').textContent = u && u.name && !S.session.open ? 'Hi, ' + u.name.split(' ')[0] : 'Your apps';
     var apps = visibleApps();
-    $('#h-sub').textContent = apps.length ? apps.length + ' app' + (apps.length > 1 ? 's' : '') : '';
+    var upd = updatableApps().length;
+    $('#h-sub').textContent = apps.length ? (apps.length + ' app' + (apps.length > 1 ? 's' : '') + (upd ? ' · ' + upd + ' update' + (upd > 1 ? 's' : '') : '')) : '';
     var g = $('#grid');
     if (!apps.length) g.innerHTML = '<div class="empty card" style="grid-column:1/-1">' + (S.catalog.apps.length ? 'No apps have been assigned to your account yet.<br>Ask the admin to add you in the Suite access list.' : 'App catalogue could not be loaded. Check your internet connection and tap refresh.') + '</div>';
     else g.innerHTML = apps.map(tileHtml).join('');
@@ -674,14 +743,16 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
     if (act === 'install') startInstall(app.id);
     else if (act === 'open') { if (!Native.launch(app.package)) { toast('Could not open ' + app.name); refreshInstalled(); render(); } }
     else if (act === 'web') Native.open(app.web);
-    else if (act === 'cancel') { S.busy[app.id] = null; refreshInstalled(); render(); }
+    else if (act === 'cancel') { S.busy[app.id] = null; stopQueue(); refreshInstalled(); render(); }
   });
   $('#suite-banner-btn').addEventListener('click', function () { startInstall('suite'); });
+  $('#upd-banner-btn').addEventListener('click', function () { queueUpdates(updatableApps()); });
 
   /* ------------------------------------------------------------------ menu ------- */
   function openMenu() {
     var m = $('#menu'); var h = '';
     h += '<button data-m="refresh">⟳ Check for updates</button>';
+    if (Native.has) h += '<button data-m="auto">⚡ Auto-update &nbsp;<b>' + (S.auto ? 'ON' : 'OFF') + '</b></button>';
     if (hasBackend() && S.session && !S.session.open) h += '<button data-m="pass">🔑 Change password</button>';
     if (isAdmin() && hasBackend()) h += '<button data-m="admin">👥 Users &amp; access</button>';
     h += '<button data-m="about">ℹ️ About</button><div class="sep"></div>';
@@ -696,6 +767,7 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
     var b = ev.target.closest('button[data-m]'); if (!b) return; closeMenu();
     var m = b.getAttribute('data-m');
     if (m === 'refresh') refreshAll(true);
+    else if (m === 'auto') setAuto(!S.auto);
     else if (m === 'pass') openPasswordSheet();
     else if (m === 'admin') showView('admin');
     else if (m === 'about') openAbout();
