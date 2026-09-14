@@ -69,6 +69,7 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
 .badge.info{background:var(--infobg);color:var(--info)}
 .tile .ver{font-size:12px;color:var(--muted);line-height:1.35}
 .tile .ver b{color:var(--text);font-weight:600}
+.tile .ver .dim{opacity:.7;font-size:11px}
 .tile .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
 .tile .acts .btn{flex:1}
 .tile .links{font-size:12px}
@@ -405,8 +406,26 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
     if (!rel) return '';
     if (rel.versionName) return 'v' + rel.versionName.replace(/^v/i, '');
     if (rel.tag && !/^latest$/i.test(rel.tag) && !/^apk-\d+$/i.test(rel.tag)) return rel.tag;
+    var m = /^apk-(\d+)$/i.exec(rel.tag || ''); if (m) return 'build ' + m[1];
+    if (rel.versionCode) return 'build ' + rel.versionCode;
     var d = rel.asset && rel.asset.updatedAt ? rel.asset.updatedAt : rel.publishedAt;
     return d ? 'build ' + fmtDate(d) : (rel.tag || '');
+  }
+  /** Har tile ke liye version block: installed AUR latest, dono hamesha dikhte hain. */
+  function verHtml(inst, rel, note) {
+    var rows = [];
+    if (inst && inst.installed) {
+      rows.push('Installed: <b>' + esc(inst.versionName || inst.versionCode || '?') + '</b>' +
+        (inst.versionCode ? ' <span class="dim">code ' + esc(inst.versionCode) + '</span>' : ''));
+    }
+    if (rel && rel.asset) {
+      rows.push('Latest: <b>' + esc(relLabel(rel)) + '</b>' +
+        (rel.versionCode ? ' <span class="dim">code ' + esc(rel.versionCode) + '</span>' : ''));
+      var when = rel.asset.updatedAt || rel.publishedAt;
+      if (when) rows.push('<span class="dim">Released ' + esc(fmtDate(when)) + '</span>');
+    }
+    if (note) rows.push(note);
+    return rows.join('<br>');
   }
   function verFoot() { return Native.has ? 'OakCraft Suite ' + esc(Native.version()) + ' (' + Native.versionCode() + ')' : 'OakCraft Suite · web version'; }
   function fmtDate(iso) {
@@ -605,32 +624,32 @@ input.t:focus,select.t:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(
     switch (st.kind) {
       case 'web':
         badge = '<span class="badge info">Web</span>';
-        ver = latest ? 'Latest: <b>' + esc(latest) + '</b>' : (st.checked ? 'No APK release found' : 'Latest version: checking…');
+        ver = verHtml(null, rel, (rel && rel.asset) ? '' : (st.checked ? 'No APK release found' : 'Latest version: checking…'));
         acts = (rel && rel.asset ? '<button class="btn primary sm" data-act="install">Download APK</button>' : '') + (app.web ? '<button class="btn sm" data-act="web">Open web</button>' : '');
         break;
       case 'install':
         badge = '<span class="badge">Not installed</span>';
-        ver = latest ? 'Latest: <b>' + esc(latest) + '</b>' : (rel ? 'No APK in the latest release' : (st.checked ? 'No APK release found (or GitHub unreachable)' : 'Checking latest version…'));
+        ver = verHtml(null, rel, (rel && rel.asset) ? '' : (rel ? 'No APK in the latest release' : (st.checked ? 'No APK release found (or GitHub unreachable)' : 'Checking latest version…')));
         acts = '<button class="btn primary sm" data-act="install"' + (rel && rel.asset ? '' : ' disabled') + '>Install</button>' + (app.web ? '<button class="btn sm ghost" data-act="web">Web</button>' : '');
         break;
       case 'update':
         badge = '<span class="badge warn">Update available</span>';
-        ver = 'Installed: <b>' + esc(inst.versionName || inst.versionCode) + '</b><br>New: <b>' + esc(latest) + '</b>';
+        ver = verHtml(inst, rel);
         acts = '<button class="btn gold sm" data-act="install">Update</button><button class="btn sm" data-act="open">Open</button>';
         break;
       case 'ok':
         badge = '<span class="badge ok">Up to date</span>';
-        ver = 'Version <b>' + esc(inst.versionName || inst.versionCode) + '</b>';
+        ver = verHtml(inst, rel);
         acts = '<button class="btn primary sm" data-act="open">Open</button>';
         break;
       case 'unknown':
         badge = '<span class="badge">Installed</span>';
-        ver = 'Version <b>' + esc(inst.versionName || inst.versionCode) + '</b><br><span style="color:var(--warn)">Couldn\'t check for updates</span>';
+        ver = verHtml(inst, null, '<span style="color:var(--warn)">Couldn\'t check for updates</span>');
         acts = '<button class="btn primary sm" data-act="open">Open</button>';
         break;
       case 'noasset':
         badge = '<span class="badge">Installed</span>';
-        ver = 'Version <b>' + esc(inst.versionName || inst.versionCode) + '</b><br>No APK in latest release';
+        ver = verHtml(inst, rel, 'No APK in the latest release');
         acts = '<button class="btn primary sm" data-act="open">Open</button>';
         break;
       case 'downloading':
