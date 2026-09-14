@@ -44,6 +44,17 @@
       "color": "#0B1A2A",
       "workflow": "android.yml",
       "versionNamePattern": "1.0.{run}"
+    },
+    {
+      "id": "returns",
+      "name": "OakCraft Return Desk",
+      "desc": "Return / replacement tracking",
+      "package": "com.returndesk.app",
+      "repo": "Weboakcraft/oc_return_management",
+      "asset": "app-release\\.apk$",
+      "web": "https://weboakcraft.github.io/oc_return_management/",
+      "icon": "icons/returns.png",
+      "color": "#0E3B3C"
     }
   ]
 }
