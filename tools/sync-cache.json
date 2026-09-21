@@ -52,7 +52,7 @@
   "versionNamePattern": null,
   "workflow": null
  },
- "574469741": {
+ "578599876": {
   "iconPaths": [
    "res/mipmap-anydpi-v26/ic_launcher.xml",
    "res/mipmap-anydpi-v26/ic_launcher.xml",
@@ -61,8 +61,8 @@
   ],
   "label": "OakCraft CRM",
   "package": "in.oakcraft.crm",
-  "versionCode": "29830162",
-  "versionName": "1.1.20260919.51",
+  "versionCode": "29832984",
+  "versionName": "1.1.20260921.54",
   "versionNamePattern": null,
   "workflow": null
  }
