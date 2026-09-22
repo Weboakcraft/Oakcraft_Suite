@@ -35,20 +35,6 @@
   "versionNamePattern": null,
   "workflow": null
  },
- "578599876": {
-  "iconPaths": [
-   "res/mipmap-anydpi-v26/ic_launcher.xml",
-   "res/mipmap-anydpi-v26/ic_launcher.xml",
-   "res/mipmap-anydpi-v26/ic_launcher.xml",
-   "res/mipmap-anydpi-v26/ic_launcher.xml"
-  ],
-  "label": "OakCraft CRM",
-  "package": "in.oakcraft.crm",
-  "versionCode": "29832984",
-  "versionName": "1.1.20260921.54",
-  "versionNamePattern": null,
-  "workflow": null
- },
  "579057408": {
   "iconPaths": [
    "res/BW.xml",
@@ -65,5 +51,19 @@
   "versionName": "1.0.8",
   "versionNamePattern": "1.0.{run}",
   "workflow": "android.yml"
+ },
+ "581421596": {
+  "iconPaths": [
+   "res/mipmap-anydpi-v26/ic_launcher.xml",
+   "res/mipmap-anydpi-v26/ic_launcher.xml",
+   "res/mipmap-anydpi-v26/ic_launcher.xml",
+   "res/mipmap-anydpi-v26/ic_launcher.xml"
+  ],
+  "label": "OakCraft CRM",
+  "package": "in.oakcraft.crm",
+  "versionCode": "29834705",
+  "versionName": "1.1.20260922.61",
+  "versionNamePattern": null,
+  "workflow": null
  }
 }
