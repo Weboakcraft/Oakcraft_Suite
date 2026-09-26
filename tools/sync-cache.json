@@ -17,23 +17,6 @@
   "versionNamePattern": "1.0.{run}",
   "workflow": "android.yml"
  },
- "579057408": {
-  "iconPaths": [
-   "res/BW.xml",
-   "res/BW.xml",
-   "res/BW.xml",
-   "res/BW.xml",
-   "res/BW.xml",
-   "res/BW.xml",
-   "res/BW.xml"
-  ],
-  "label": "OakCraft Attendance",
-  "package": "in.oakcraft.attendance",
-  "versionCode": "8",
-  "versionName": "1.0.8",
-  "versionNamePattern": "1.0.{run}",
-  "workflow": "android.yml"
- },
  "585952142": {
   "iconPaths": [
    "res/BW.xml",
@@ -65,5 +48,22 @@
   "versionName": "1.1.20260925.89",
   "versionNamePattern": null,
   "workflow": null
+ },
+ "590124037": {
+  "iconPaths": [
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml"
+  ],
+  "label": "ATTENDANCE",
+  "package": "in.oakcraft.attendance",
+  "versionCode": "13",
+  "versionName": "1.0.13",
+  "versionNamePattern": "1.0.{run}",
+  "workflow": "android.yml"
  }
 }
