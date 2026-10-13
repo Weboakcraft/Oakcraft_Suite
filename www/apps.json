@@ -55,6 +55,16 @@
       "icon": "icons/returns.png",
       "color": "#0E3B3C",
       "web": "https://weboakcraft.github.io/oc_return_management/"
+    },
+    {
+      "id": "media-application",
+      "name": "Lumen",
+      "desc": "Application",
+      "package": "com.oakcraft.lumen",
+      "repo": "Weboakcraft/Media_Application",
+      "asset": "^(?!.*(?:debug|testing)).+\\.apk$",
+      "icon": "icons/media-application.png",
+      "color": "#0F1729"
     }
   ]
 }
