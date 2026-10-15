@@ -52,20 +52,6 @@
   "versionNamePattern": "1.0.{run}",
   "workflow": "android.yml"
  },
- "636733175": {
-  "iconPaths": [
-   "res/mipmap-anydpi-v26/ic_launcher.xml",
-   "res/mipmap-anydpi-v26/ic_launcher.xml",
-   "res/mipmap-anydpi-v26/ic_launcher.xml",
-   "res/mipmap-anydpi-v26/ic_launcher.xml"
-  ],
-  "label": "LEVQORA",
-  "package": "in.oakcraft.crm",
-  "versionCode": "29864811",
-  "versionName": "1.1.20261013.121",
-  "versionNamePattern": null,
-  "workflow": null
- },
  "636935741": {
   "color": null,
   "iconPaths": [
@@ -82,6 +68,20 @@
   "package": "com.oakcraft.lumen",
   "versionCode": "1",
   "versionName": "1.0.0",
+  "versionNamePattern": null,
+  "workflow": null
+ },
+ "643697353": {
+  "iconPaths": [
+   "res/mipmap-anydpi-v26/ic_launcher.xml",
+   "res/mipmap-anydpi-v26/ic_launcher.xml",
+   "res/mipmap-anydpi-v26/ic_launcher.xml",
+   "res/mipmap-anydpi-v26/ic_launcher.xml"
+  ],
+  "label": "LEVQORA",
+  "package": "in.oakcraft.crm",
+  "versionCode": "29867748",
+  "versionName": "1.1.20261015.127",
   "versionNamePattern": null,
   "workflow": null
  }
