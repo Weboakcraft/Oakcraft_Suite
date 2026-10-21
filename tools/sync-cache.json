@@ -71,7 +71,7 @@
   "versionNamePattern": null,
   "workflow": null
  },
- "658456220": {
+ "661710232": {
   "iconPaths": [
    "res/mipmap-anydpi-v26/ic_launcher.xml",
    "res/mipmap-anydpi-v26/ic_launcher.xml",
@@ -80,8 +80,8 @@
   ],
   "label": "LEVQORA",
   "package": "in.oakcraft.crm",
-  "versionCode": "29874615",
-  "versionName": "1.1.20261020.128",
+  "versionCode": "29876129",
+  "versionName": "1.1.20261021.135",
   "versionNamePattern": null,
   "workflow": null
  }
