@@ -1,22 +1,4 @@
 {
- "532330842": {
-  "iconPaths": [
-   "res/BW.xml",
-   "res/BW.xml",
-   "res/BW.xml",
-   "res/BW.xml",
-   "res/BW.xml",
-   "res/BW.xml",
-   "res/BW.xml",
-   "res/BW.xml"
-  ],
-  "label": "Oakcraft Stock",
-  "package": "in.oakcraft.stock",
-  "versionCode": "5",
-  "versionName": "1.0.5",
-  "versionNamePattern": "1.0.{run}",
-  "workflow": "android.yml"
- },
  "585952142": {
   "iconPaths": [
    "res/BW.xml",

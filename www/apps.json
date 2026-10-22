@@ -20,19 +20,6 @@
       "web": "https://weboakcraft.github.io/Oakcraft_Sales_CRM/"
     },
     {
-      "id": "stock",
-      "name": "OakCraft Stock",
-      "desc": "Stock & inventory software",
-      "package": "in.oakcraft.stock",
-      "repo": "Weboakcraft/New_Stock_Software",
-      "asset": "^(?!.*(?:debug|testing)).+\\.apk$",
-      "icon": "icons/stock.png",
-      "color": "#1E1A14",
-      "web": "https://weboakcraft.github.io/New_Stock_Software/",
-      "workflow": "android.yml",
-      "versionNamePattern": "1.0.{run}"
-    },
-    {
       "id": "attendance",
       "name": "OakCraft Attendance",
       "desc": "Daily attendance & leave",
