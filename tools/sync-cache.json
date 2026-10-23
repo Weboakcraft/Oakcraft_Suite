@@ -84,5 +84,21 @@
   "versionName": "1.1.20261021.135",
   "versionNamePattern": null,
   "workflow": null
+ },
+ "669083226": {
+  "color": null,
+  "iconPaths": [
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml",
+   "res/BW.xml"
+  ],
+  "label": "Oakcraft Expense",
+  "package": "in.oakcraft.expense",
+  "versionCode": "1",
+  "versionName": "1.0.0",
+  "versionNamePattern": null,
+  "workflow": null
  }
 }
