@@ -69,12 +69,12 @@
     {
       "id": "expense-manager",
       "name": "Oakcraft Expense",
-      "desc": "Manage Exp.",
+      "desc": "Expense Summary",
       "package": "in.oakcraft.expense",
       "repo": "Weboakcraft/expense-manager",
       "asset": "^(?!.*(?:debug|testing)).+\\.apk$",
       "icon": "icons/expense-manager.png",
-      "color": "#0F1729",
+      "color": "#40A0E0",
       "web": "https://weboakcraft.github.io/expense-manager/"
     }
   ]
