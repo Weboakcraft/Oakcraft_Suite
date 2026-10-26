@@ -85,7 +85,7 @@
   "versionNamePattern": null,
   "workflow": null
  },
- "672107998": {
+ "677962234": {
   "color": "#40A0E0",
   "iconPaths": [
    "res/mipmap-anydpi-v26/ic_launcher.xml",
@@ -99,8 +99,8 @@
   ],
   "label": "Oakcraft Expense",
   "package": "in.oakcraft.expense",
-  "versionCode": "1",
-  "versionName": "1.0",
+  "versionCode": "18",
+  "versionName": "1.0.18",
   "versionNamePattern": null,
   "workflow": null
  }
