@@ -71,20 +71,6 @@
   "versionNamePattern": null,
   "workflow": null
  },
- "661710232": {
-  "iconPaths": [
-   "res/mipmap-anydpi-v26/ic_launcher.xml",
-   "res/mipmap-anydpi-v26/ic_launcher.xml",
-   "res/mipmap-anydpi-v26/ic_launcher.xml",
-   "res/mipmap-anydpi-v26/ic_launcher.xml"
-  ],
-  "label": "LEVQORA",
-  "package": "in.oakcraft.crm",
-  "versionCode": "29876129",
-  "versionName": "1.1.20261021.135",
-  "versionNamePattern": null,
-  "workflow": null
- },
  "677962234": {
   "color": "#40A0E0",
   "iconPaths": [
@@ -101,6 +87,20 @@
   "package": "in.oakcraft.expense",
   "versionCode": "18",
   "versionName": "1.0.18",
+  "versionNamePattern": null,
+  "workflow": null
+ },
+ "684416997": {
+  "iconPaths": [
+   "res/mipmap-anydpi-v26/ic_launcher.xml",
+   "res/mipmap-anydpi-v26/ic_launcher.xml",
+   "res/mipmap-anydpi-v26/ic_launcher.xml",
+   "res/mipmap-anydpi-v26/ic_launcher.xml"
+  ],
+  "label": "LEVQORA",
+  "package": "in.oakcraft.crm",
+  "versionCode": "29886302",
+  "versionName": "1.1.20261028.136",
   "versionNamePattern": null,
   "workflow": null
  }
